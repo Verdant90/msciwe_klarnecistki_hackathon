@@ -11,7 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
-import static com.szymon.hackathonapplication.helpers.MapUtils.distanceBetween;
+import static com.szymon.hackathonapplication.helpers.map.MapUtils.distanceBetween;
 
 public class FruitFactory {
 

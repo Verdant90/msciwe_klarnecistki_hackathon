@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
@@ -37,9 +38,10 @@ public class MapActivity extends FragmentActivity implements
     private static GoogleMap mMap;
     private static LatLng location;
     private MapMVP.Presenter presenter;
+    private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
-    public void goToChallengeActivity(){
+    public void goToChallengeActivity() {
         Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivity(intent);
     }
@@ -48,6 +50,7 @@ public class MapActivity extends FragmentActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         ButterKnife.bind(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -71,7 +74,12 @@ public class MapActivity extends FragmentActivity implements
         mMap.getUiSettings().setMapToolbarEnabled(false);
         presenter.loadFruits();
 
+        createGpsMarker(gdanskLatLng);
         createLocationUpdates();
+    }
+
+    private void createGpsMarker(final LatLng latLng) {
+        this.gpsMarker = new GpsMarker(mMap, latLng);
     }
 
     private void createLocationUpdates() {
@@ -97,7 +105,7 @@ public class MapActivity extends FragmentActivity implements
             fruitMarker = mMap.addMarker(new MarkerOptions()
                     .position(fruit.location));
 
-            fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+            fruitMarker.setIcon(fruit.getFruitIcon());
         }
     }
 
@@ -121,12 +129,14 @@ public class MapActivity extends FragmentActivity implements
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
                 .position(fruit.location));
 
-        fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+        fruitMarker.setIcon(fruit.getFruitIcon());
     }
 
     @Override
     public void onLocationChanged(final Location location) {
-        this.location = new LatLng(location.getLatitude(), location.getLongitude());
+        final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        gpsMarker.changePosition(currentLocation);
+        this.location = currentLocation;
     }
 
     @Override

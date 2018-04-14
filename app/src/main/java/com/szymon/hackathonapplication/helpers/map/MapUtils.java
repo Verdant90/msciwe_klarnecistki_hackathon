@@ -1,4 +1,4 @@
-package com.szymon.hackathonapplication.helpers;
+package com.szymon.hackathonapplication.helpers.map;
 
 
 import android.location.Location;

@@ -37,11 +37,11 @@ public class AppPreferences {
 
     // Exploration Range
 
-    private void setExplorationRange(final double explorationRange) {
+    private static void setExplorationRange(final double explorationRange) {
         preferencesEdit.putFloat(EXPLORATION_RANGE, (float) explorationRange).apply();
     }
 
-    public double getExplorationRange() {
+    public static double getExplorationRange() {
         return preferences.getFloat(EXPLORATION_RANGE, 100);
     }
 
