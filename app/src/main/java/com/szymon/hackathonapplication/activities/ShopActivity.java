@@ -12,10 +12,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.szymon.hackathonapplication.R;
-import com.szymon.hackathonapplication.models.ShopItem;
+import com.szymon.hackathonapplication.models.shop.items.DoubleCoinsShopItem;
+import com.szymon.hackathonapplication.models.shop.items.DoubleExperienceShopItem;
+import com.szymon.hackathonapplication.models.shop.ShopItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,11 +40,8 @@ public class ShopActivity extends Activity {
     private void setUpShopItemsAdapter() {
         // TODO TCI extract to DAO
         final List<ShopItem> shopItems = new ArrayList<>();
-        shopItems.add(ShopItem.builder().title("title1").description("description1").cost(10L).build());
-        shopItems.add(ShopItem.builder().title("title2").description("description1").cost(10L).build());
-        shopItems.add(ShopItem.builder().title("title3").description("description1").cost(10L).build());
-        shopItems.add(ShopItem.builder().title("title4").description("description1").cost(10L).build());
-        shopItems.add(ShopItem.builder().title("title5").description("description1").cost(10L).build());
+        shopItems.add(new DoubleCoinsShopItem());
+        shopItems.add(new DoubleExperienceShopItem());
 
         final int textViewResourceId = 0;
         shopItemsListView.setAdapter(new ShopItemAdapter(this, textViewResourceId, shopItems));
@@ -112,7 +110,7 @@ public class ShopActivity extends Activity {
             holder.title.setText(shopItem.getTitle());
             holder.description.setText(shopItem.getDescription());
             holder.cost.setText(shopItem.getCost().toString());
-            holder.purchaseButton.setOnClickListener(onPurchaseButtonClickedListener());
+            holder.purchaseButton.setOnClickListener(shopItem);
         }
 
         @NonNull
@@ -121,7 +119,7 @@ public class ShopActivity extends Activity {
                 @Override
                 public void onClick(View view) {
                     // TODO context should be taken from HackatonApplication
-                    Toast.makeText(getContext(), "Success", Toast.LENGTH_SHORT).show();
+
                 }
             };
         }
