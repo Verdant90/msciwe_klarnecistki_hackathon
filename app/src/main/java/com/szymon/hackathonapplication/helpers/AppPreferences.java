@@ -109,7 +109,8 @@ public class AppPreferences {
 
     public static void spendYabCoins(final long coins) {
         final long current = getYabCoins();
-        preferencesEdit.putLong(YAB_COINS, current - coins).apply();
+        preferencesEdit.putLong(YAB_COINS, current - coins)
+                .apply();
     }
 
     private static void setTotalYabCoins(final long coins) {

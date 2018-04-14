@@ -27,6 +27,7 @@ public class BasketUpgradeShopItem extends ShopItem {
     @Override
     public void onClick(final View view) {
         AppPreferences.increaseBasketVersion();
+        AppPreferences.spendYabCoins(getCost());
         this.callback.onShopItemPurchased();
     }
 

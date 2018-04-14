@@ -46,6 +46,7 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
         MapActivity.addFruitsToMap(FruitFactory.getInstance()
                 .getFruits(toNorthWest(lat, lng), toSouthEast(lat, lng), FRUITS_COUNT));
 
+        AppPreferences.spendYabCoins(getCost());
         callback.onShopItemPurchased();
     }
 
