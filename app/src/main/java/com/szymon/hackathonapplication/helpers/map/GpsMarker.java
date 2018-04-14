@@ -49,4 +49,8 @@ public class GpsMarker {
         marker.setPosition(latLng);
         circle.setCenter(latLng);
     }
+
+    public LatLng getPosition() {
+        return this.latLng;
+    }
 }

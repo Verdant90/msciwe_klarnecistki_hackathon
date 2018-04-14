@@ -21,7 +21,7 @@ public class BasketUpgradeShopItem extends ShopItem {
     @Override
     public boolean isAvailable() {
         return AppPreferences.getYabCoins() >= getCost() &&
-                AppPreferences.getBasketVersion() < MAX_BASKET_VERSION;
+                AppPreferences.getBasketVersion() < MAX_BASKET_VERSION - 1;
     }
 
     @Override

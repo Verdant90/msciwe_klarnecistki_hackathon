@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -122,6 +123,20 @@ public class MapActivity extends FragmentActivity implements
     }
 
     private GpsMarker gpsMarker;
+
+    @OnClick(R.id.btn_current_location)
+    public void goToCurrentLocation() {
+        final LatLng position = gpsMarker.getPosition();
+
+        final CameraPosition cameraPosition = CameraPosition.builder()
+                .zoom(MIN_ZOOM_PREFERENCE_3D_MODE)
+                .target(position)
+                .build();
+
+        final CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+
+        mMap.animateCamera(cameraUpdate);
+    }
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
