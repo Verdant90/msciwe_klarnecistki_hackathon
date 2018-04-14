@@ -13,10 +13,15 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.models.FruitFactory;
 import com.szymon.hackathonapplication.models.shop.items.DoubleCoinsShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleExperienceShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
+import com.szymon.hackathonapplication.models.shop.items.MoreFruitsNearbyShopItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
         final List<ShopItem> shopItems = new ArrayList<>();
         shopItems.add(new DoubleCoinsShopItem(this));
         shopItems.add(new DoubleExperienceShopItem(this));
+        shopItems.add(new MoreFruitsNearbyShopItem(this));
 
         final int textViewResourceId = 0;
         shopItemsListView.setAdapter(new ShopItemAdapter(this, textViewResourceId, shopItems));

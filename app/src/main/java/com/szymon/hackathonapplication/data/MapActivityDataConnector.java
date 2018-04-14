@@ -5,6 +5,7 @@ import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.FruitFactory;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapActivityDataConnector implements MapMVP.Model {
@@ -14,7 +15,7 @@ public class MapActivityDataConnector implements MapMVP.Model {
 
     public MapActivityDataConnector(final MapMVP.Presenter presenter) {
         this.presenter = presenter;
-        this.fruitFactory = new FruitFactory();
+        this.fruitFactory = FruitFactory.getInstance();
     }
 
     @Override
