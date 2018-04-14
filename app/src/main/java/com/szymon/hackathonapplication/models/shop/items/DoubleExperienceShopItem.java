@@ -47,6 +47,7 @@ public class DoubleExperienceShopItem extends ShopItem {
     @Override
     public void onClick(final View view) {
         AppPreferences.setExperienceBonusMultiplier(BONUS);
+        AppPreferences.spendYabCoins(getCost());
         timer.start();
 
         // TODO Toast

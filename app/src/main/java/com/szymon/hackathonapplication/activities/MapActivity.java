@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,12 +25,15 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
+import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
@@ -51,7 +56,16 @@ public class MapActivity extends FragmentActivity implements
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
+    private boolean mapModeNormal = true;
+    private static final float MIN_ZOOM_PREFERENCE = 12f;
+    private static final float MIN_ZOOM_PREFERENCE_3D_MODE = 16f;
 
+    @BindView(R.id.sky)
+    RelativeLayout skyLayout;
+    @BindView(R.id.map_gradient)
+    View mapGradientView;
+    @BindView(R.id.btn_map_mode)
+    FabButton toggleStylesButton;
     @BindView(R.id.text_challenge_timer)
     TextView challengeTimer;
     @BindView(R.id.layout_challenge_panel)
@@ -64,8 +78,48 @@ public class MapActivity extends FragmentActivity implements
     TextView challengeCurrentProgressTextView;
     @BindView(R.id.btn_challenges)
     FabButton challengesButton;
+    @BindView(R.id.button_shop)
+    ImageView shopButton;
     private int challengeCount = 0;
     private boolean challengeMode;
+
+    @OnClick(R.id.btn_map_mode)
+    public void switchMapMode() {
+        if (mapModeNormal) {
+            switchToMapMode3d();
+        } else {
+            switchToMapModeNormal();
+        }
+        mapModeNormal = !mapModeNormal;
+    }
+
+    private void switchToMapModeNormal() {
+        skyLayout.setVisibility(GONE);
+        mapGradientView.setVisibility(GONE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_3d, R.drawable.ic_map_3d);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .bearing(0)
+                .tilt(0)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void switchToMapMode3d() {
+        skyLayout.setVisibility(VISIBLE);
+        mapGradientView.setVisibility(VISIBLE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .tilt(67.5f)
+                .bearing(mMap.getCameraPosition().bearing)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE_3D_MODE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
 
     private GpsMarker gpsMarker;
 
@@ -86,6 +140,8 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
+
+        setShopButtonIcon();
     }
 
     @Override
@@ -103,6 +159,17 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setShopButtonIcon();
+    }
+
+    private void setShopButtonIcon() {
+        final Integer basketVersion = AppPreferences.getBasketVersion();
+        shopButton.setImageResource(BasketVersionIconMapper.toDrawableIcon(basketVersion));
+    }
+
+    @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -115,6 +182,8 @@ public class MapActivity extends FragmentActivity implements
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                this, R.raw.map_style));
         presenter.loadFruits();
 
         createGpsMarker(gdanskLatLng);
