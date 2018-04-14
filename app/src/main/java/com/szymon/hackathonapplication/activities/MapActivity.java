@@ -9,10 +9,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
+import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
+
+import java.util.List;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, MapMVP.View {
 
@@ -45,5 +49,16 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         presenter.loadFruits();
+    }
+
+    @Override
+    public void showGeneratedFruits(final List<Fruit> fruits) {
+        Marker fruitMarker;
+        for (Fruit fruit : fruits) {
+            fruitMarker = mMap.addMarker(new MarkerOptions()
+                    .position(fruit.location));
+
+            fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+        }
     }
 }

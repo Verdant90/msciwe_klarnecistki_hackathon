@@ -1,6 +1,7 @@
 package com.szymon.hackathonapplication.models;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.szymon.hackathonapplication.models.fruits.Apple;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class FruitFactory {
 
     public List<Fruit> getFruits(final LatLng northWestCorner, final LatLng southEastCorner) {
         final List<Fruit> result = new ArrayList<>();
+        result.add(new Apple(locationFactory.getRandomLocation(northWestCorner, southEastCorner)));
         return result;
     }
 
