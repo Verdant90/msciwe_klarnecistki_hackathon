@@ -9,7 +9,7 @@ import com.szymon.hackathonapplication.models.fruits.Plum;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.szymon.hackathonapplication.helpers.MapUtils.distanceBetween;
+import static com.szymon.hackathonapplication.helpers.map.MapUtils.distanceBetween;
 
 public class FruitFactory {
 

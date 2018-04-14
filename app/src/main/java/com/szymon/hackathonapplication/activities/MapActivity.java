@@ -37,7 +37,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     private MapMVP.Presenter presenter;
 
     @OnClick(R.id.btn_challenges)
-    public void goToChallengeActivity(){
+    public void goToChallengeActivity() {
         Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivity(intent);
     }
@@ -46,6 +46,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         ButterKnife.bind(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -95,7 +96,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
             fruitMarker = mMap.addMarker(new MarkerOptions()
                     .position(fruit.location));
 
-            fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+            fruitMarker.setIcon(fruit.getFruitIcon());
         }
     }
 
@@ -109,7 +110,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
                 .position(fruit.location));
 
-        fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+        fruitMarker.setIcon(fruit.getFruitIcon());
     }
 
     @Override
