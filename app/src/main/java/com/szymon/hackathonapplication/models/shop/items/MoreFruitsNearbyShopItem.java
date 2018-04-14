@@ -19,7 +19,7 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
     private static final double NEARBY_RANGE_IN_DEGREES = 0.005;
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
-        super("More fruits nearby",
+        super("It's a kind of magic",
                 String.format("Spawn %d fruits nearby.", FRUITS_COUNT),
                 ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class), R.drawable.ic_more_apples,
                 callback);
