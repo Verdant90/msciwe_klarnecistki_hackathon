@@ -8,8 +8,12 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,11 +25,13 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
+import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -35,6 +41,19 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     private GoogleMap mMap;
     private MapMVP.Presenter presenter;
+    private Challenge currentChallenge;
+    private CountDownTimer challengeTimerCountDown;
+    @BindView(R.id.text_challenge_timer)
+    TextView challengeTimer;
+    @BindView(R.id.layout_challenge_panel)
+    LinearLayout challengeLayout;
+    @BindView(R.id.image_challenge_icon)
+    ImageView challengeIcon;
+    @BindView(R.id.text_challenge_title)
+    TextView challengeTitle;
+    @BindView(R.id.text_challenge_current_score)
+    TextView challengeCurrentProgressTextView;
+
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity(){
