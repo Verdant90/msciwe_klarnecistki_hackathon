@@ -24,7 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ShopActivity extends Activity {
+public class ShopActivity extends Activity implements ShopItem.Callback {
 
     @BindView(R.id.list_shop_items)
     ListView shopItemsListView;
@@ -40,11 +40,16 @@ public class ShopActivity extends Activity {
     private void setUpShopItemsAdapter() {
         // TODO TCI extract to DAO
         final List<ShopItem> shopItems = new ArrayList<>();
-        shopItems.add(new DoubleCoinsShopItem());
-        shopItems.add(new DoubleExperienceShopItem());
+        shopItems.add(new DoubleCoinsShopItem(this));
+        shopItems.add(new DoubleExperienceShopItem(this));
 
         final int textViewResourceId = 0;
         shopItemsListView.setAdapter(new ShopItemAdapter(this, textViewResourceId, shopItems));
+    }
+
+    @Override
+    public void onShopItemPurchased() {
+        this.finish();
     }
 
     public class ShopItemAdapter extends ArrayAdapter<ShopItem> {
@@ -111,17 +116,6 @@ public class ShopActivity extends Activity {
             holder.description.setText(shopItem.getDescription());
             holder.cost.setText(shopItem.getCost().toString());
             holder.purchaseButton.setOnClickListener(shopItem);
-        }
-
-        @NonNull
-        private View.OnClickListener onPurchaseButtonClickedListener() {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // TODO context should be taken from HackatonApplication
-
-                }
-            };
         }
     }
 
