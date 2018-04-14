@@ -181,10 +181,7 @@ public class MapActivity extends FragmentActivity implements
 
     public static void addFruitsToMap(final List<Fruit> fruits) {
         for (final Fruit fruit : fruits) {
-            mMap.addMarker(new MarkerOptions()
-                    .position(fruit.location)
-                    .icon(fruit.getFruitIcon())
-            );
+            fruit.drawOnMap(mMap);
         }
     }
 
@@ -258,7 +255,7 @@ public class MapActivity extends FragmentActivity implements
     public void onLocationChanged(final Location location) {
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         gpsMarker.changePosition(currentLocation);
-        this.location = currentLocation;
+        MapActivity.location = currentLocation;
     }
 
     @Override
