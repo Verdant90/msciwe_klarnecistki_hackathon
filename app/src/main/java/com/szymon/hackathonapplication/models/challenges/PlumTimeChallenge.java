@@ -7,9 +7,9 @@ public class PlumTimeChallenge extends Challenge {
     public PlumTimeChallenge() {
         timeInMinutes = 5;
         pointsReward = 50;
-        description = "lorem ipsum";
-        title = "lorem ipsum";
+        description = "Collect 10 plums within 5 minutes.";
+        title = "PLUMmer Time";
         howManyToCollect = 10;
-        icon = AppResources.getDrawable(R.drawable.ic_plum);
+        icon = AppResources.getDrawable(R.drawable.ic_plum_challenge);
     }
 }

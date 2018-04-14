@@ -9,9 +9,9 @@ public class PearTimeChallenge extends Challenge {
 
         timeInMinutes = 5;
         pointsReward = 40;
-        description = "lorem ipsum";
-        title = "lorem ipsum";
+        description = "Collect 10 pears within 5 minutes.";
+        title = "PEAR-TO-PEAR";
         howManyToCollect = 10;
-        icon = AppResources.getDrawable(R.drawable.ic_pear);
+        icon = AppResources.getDrawable(R.drawable.ic_pear_challenge);
     }
 }
