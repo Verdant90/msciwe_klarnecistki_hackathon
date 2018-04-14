@@ -55,6 +55,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="0.06" />
 
+    <mbanje.kurt.fabbutton.FabButton
+        android:id="@+id/TMP_increment_pears"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:color="@android:color/white"
+        android:indeterminate="true"
+        android:src="@drawable/ic_fab_complete"
+        app:fbb_endBitmap="@drawable/ic_fab_complete"
+        app:fbb_progressColor="@android:color/white"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_showEndBitmap="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <LinearLayout
         android:id="@+id/layout_challenge_panel"
         android:layout_width="100dp"
