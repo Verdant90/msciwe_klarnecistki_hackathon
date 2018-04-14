@@ -6,8 +6,10 @@ public interface MapMVP {
     }
 
     interface Presenter {
+        void loadFruits();
     }
 
     interface Model {
+        void loadFruits();
     }
 }

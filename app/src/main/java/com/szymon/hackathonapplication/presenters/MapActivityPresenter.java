@@ -13,4 +13,9 @@ public class MapActivityPresenter implements MapMVP.Presenter {
         this.view = view;
         this.model = new MapActivityDataConnector(this);
     }
+
+    @Override
+    public void loadFruits() {
+        model.loadFruits();
+    }
 }
