@@ -6,4 +6,5 @@ public class FruitFactory {
     public FruitFactory() {
         this.locationFactory = new LocationFactory();
     }
+
 }
