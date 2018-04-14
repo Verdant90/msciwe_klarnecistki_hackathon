@@ -31,9 +31,11 @@ import butterknife.OnClick;
 
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
-public class MapActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback, MapMVP.View {
+public class MapActivity extends FragmentActivity implements
+        LocationListener, OnMapReadyCallback, MapMVP.View {
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
+    private static LatLng location;
     private MapMVP.Presenter presenter;
 
     @OnClick(R.id.btn_challenges)
@@ -101,9 +103,19 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     @OnClick(R.id.button_shop)
     public void goToShopButton() {
-        startActivity(new Intent(MapActivity.this, ShopActivity.class));
+        startActivity(new Intent(this, ShopActivity.class));
     }
 
+    public static LatLng currentLocation() {
+        return location;
+    }
+
+    public static void addFruitsToMap(final List<Fruit> fruits) {
+        for (final Fruit fruit : fruits) {
+            mMap.addMarker(new MarkerOptions()
+                .position(fruit.location));
+        }
+    }
 
     private void addFruitToMap(final Fruit fruit) {
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
@@ -114,6 +126,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     @Override
     public void onLocationChanged(final Location location) {
+        this.location = new LatLng(location.getLatitude(), location.getLongitude());
     }
 
     @Override
