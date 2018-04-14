@@ -13,6 +13,7 @@ public class AppPreferences {
     private static final String APPLE_COUNT = "APPLE_COUNT";
     private static final String PEAR_COUNT = "PEAR_COUNT";
     private static final String PLUM_COUNT = "PLUM_COUNT";
+    private static final String EXPERIENCE_POINTS = "EXPERIENCE_POINTS";
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -28,29 +29,48 @@ public class AppPreferences {
         return instance;
     }
 
+    // Exploration Range
+
     private void setExplorationRange(final double explorationRange) {
-        preferencesEdit.putFloat(EXPLORATION_RANGE, (float) explorationRange);
+        preferencesEdit.putFloat(EXPLORATION_RANGE, (float) explorationRange).apply();
     }
 
     public double getExplorationRange() {
         return preferences.getFloat(EXPLORATION_RANGE, 100);
     }
 
+    // Experience Points
+
+    public void addExperiencePoints(final long experiencePoints) {
+        final long current = getExperiencePoints();
+        setExperiencePoints(current + experiencePoints);
+    }
+
+    private void setExperiencePoints(final long experiencePoints) {
+        preferencesEdit.putLong(EXPERIENCE_POINTS, experiencePoints).apply();
+    }
+
+    private long getExperiencePoints() {
+        return preferences.getLong(EXPERIENCE_POINTS, 0);
+    }
+
+    // Yab Coins
+
     public void addYabCoins(final long coins) {
         final long current = getYabCoins();
         final long currentTotal = getTotalYabCoins();
 
-        preferencesEdit.putLong(YAB_COINS, current + coins);
-        preferencesEdit.putLong(TOTAL_YAB_COINS, currentTotal + coins);
+        preferencesEdit.putLong(YAB_COINS, current + coins).apply();
+        preferencesEdit.putLong(TOTAL_YAB_COINS, currentTotal + coins).apply();
     }
 
     public void spendYabCoins(final long coins) {
         final long current = getYabCoins();
-        preferencesEdit.putLong(YAB_COINS, current - coins);
+        preferencesEdit.putLong(YAB_COINS, current - coins).apply();
     }
 
     private void setTotalYabCoins(final long coins) {
-        preferencesEdit.putLong(TOTAL_YAB_COINS, coins);
+        preferencesEdit.putLong(TOTAL_YAB_COINS, coins).apply();
     }
 
     public long getTotalYabCoins() {
@@ -58,12 +78,14 @@ public class AppPreferences {
     }
 
     private void setYabCoins(final long coins) {
-        preferencesEdit.putLong(YAB_COINS, coins);
+        preferencesEdit.putLong(YAB_COINS, coins).apply();
     }
 
     public long getYabCoins() {
         return preferences.getLong(YAB_COINS, 0);
     }
+
+    // Apple
 
     private static void setAppleCount(final long points) {
         preferencesEdit.putLong(APPLE_COUNT, points).apply();
@@ -78,6 +100,8 @@ public class AppPreferences {
         setAppleCount(current + 1);
     }
 
+    // Pear
+
     private static void setPearCount(final long points) {
         preferencesEdit.putLong(PEAR_COUNT, points).apply();
     }
@@ -90,6 +114,8 @@ public class AppPreferences {
         final long current = getPearCount();
         setPearCount(current + 1);
     }
+
+    // Plum
 
     private static void setPlumCount(final long points) {
         preferencesEdit.putLong(PLUM_COUNT, points).apply();
