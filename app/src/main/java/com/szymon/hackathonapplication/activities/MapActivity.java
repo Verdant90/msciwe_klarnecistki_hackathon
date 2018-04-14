@@ -27,11 +27,13 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
+import com.szymon.hackathonapplication.models.shop.items.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
@@ -65,6 +67,8 @@ public class MapActivity extends FragmentActivity implements
     TextView challengeCurrentProgressTextView;
     @BindView(R.id.btn_challenges)
     FabButton challengesButton;
+    @BindView(R.id.button_shop)
+    ImageView shopButton;
     private int challengeCount = 0;
     private boolean challengeMode;
 
@@ -91,6 +95,8 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
+
+        setShopButtonIcon();
     }
 
     @Override
@@ -105,6 +111,17 @@ public class MapActivity extends FragmentActivity implements
                 Toast.makeText(this, "Try again later!", Toast.LENGTH_SHORT);
             }
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setShopButtonIcon();
+    }
+
+    private void setShopButtonIcon() {
+        final Integer basketVersion = AppPreferences.getBasketVersion();
+        shopButton.setImageResource(BasketVersionIconMapper.toDrawableIcon(basketVersion));
     }
 
     @Override
