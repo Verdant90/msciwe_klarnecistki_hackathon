@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.models.FruitFactory;
+import com.szymon.hackathonapplication.models.shop.items.BasketUpgradeShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleCoinsShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleExperienceShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
@@ -48,6 +49,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
         shopItems.add(new DoubleCoinsShopItem(this));
         shopItems.add(new DoubleExperienceShopItem(this));
         shopItems.add(new MoreFruitsNearbyShopItem(this));
+        shopItems.add(new BasketUpgradeShopItem(this));
 
         final int textViewResourceId = 0;
         shopItemsListView.setAdapter(new ShopItemAdapter(this, textViewResourceId, shopItems));
@@ -117,7 +119,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
             return holder;
         }
 
-        private void fillViewHolder(ViewHolder holder, ShopItem shopItem) {
+        private void fillViewHolder(final ViewHolder holder, final ShopItem shopItem) {
             holder.title.setText(shopItem.getTitle());
             holder.description.setText(shopItem.getDescription());
             holder.cost.setText(shopItem.getCost().toString());
