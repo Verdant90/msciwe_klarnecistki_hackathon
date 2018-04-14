@@ -1,8 +1,127 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:map="http://schemas.android.com/apk/res-auto"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.szymon.hackathonapplication.activities.MapActivity" />
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:map="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="com.szymon.hackathonapplication.activities.MapActivity" />
+
+    </RelativeLayout>
+
+    <mbanje.kurt.fabbutton.FabButton
+        android:id="@+id/btn_challenges"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:color="@android:color/white"
+        android:indeterminate="true"
+        android:src="@drawable/ic_medal"
+        app:fbb_endBitmap="@drawable/ic_medal"
+        app:fbb_progressColor="@android:color/white"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_showEndBitmap="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.4" />
+
+    <ImageView
+        android:id="@+id/button_shop"
+        android:layout_width="110dp"
+        android:layout_height="110dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:color="@android:color/white"
+        android:src="@drawable/basket_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintVertical_bias="0.95" />
+
+    <mbanje.kurt.fabbutton.FabButton
+        android:id="@+id/TMP_increment_pears"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:color="@android:color/white"
+        android:indeterminate="true"
+        android:src="@drawable/ic_fab_complete"
+        app:fbb_endBitmap="@drawable/ic_fab_complete"
+        app:fbb_progressColor="@android:color/white"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_showEndBitmap="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/layout_challenge_panel"
+        android:layout_width="100dp"
+        android:layout_height="130dp"
+        android:background="@drawable/bg_challenge_mode"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/image_challenge_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            tools:src="@drawable/ic_apple_challenge" />
+
+        <TextView
+            android:id="@+id/text_challenge_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="iCHALLENGE" />
+
+        <TextView
+            android:id="@+id/text_challenge_current_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="7dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="2/5" />
+
+        <TextView
+            android:id="@+id/text_challenge_timer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="4:45" />
+    </LinearLayout>
+</android.support.constraint.ConstraintLayout>
+
