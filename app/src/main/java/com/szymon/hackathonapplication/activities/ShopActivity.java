@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.models.FruitFactory;
+import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.shop.items.BasketUpgradeShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleCoinsShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleExperienceShopItem;
@@ -125,6 +126,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
             holder.description.setText(shopItem.getDescription());
             holder.cost.setText(shopItem.getCost().toString());
             holder.purchaseButton.setOnClickListener(shopItem);
+            holder.icon.setImageDrawable(shopItem.getShopItemIcon());
         }
     }
 
