@@ -12,4 +12,8 @@ public abstract class Fruit {
     public int experience;
     public boolean claimed;
     public abstract void applyRewardEffect();
+
+    public Fruit(final LatLng location) {
+        this.location = location;
+    }
 }
