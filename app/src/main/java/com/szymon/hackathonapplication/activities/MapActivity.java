@@ -121,7 +121,9 @@ public class MapActivity extends FragmentActivity implements
     public static void addFruitsToMap(final List<Fruit> fruits) {
         for (final Fruit fruit : fruits) {
             mMap.addMarker(new MarkerOptions()
-                .position(fruit.location));
+                    .position(fruit.location)
+                    .icon(fruit.getFruitIcon())
+            );
         }
     }
 
