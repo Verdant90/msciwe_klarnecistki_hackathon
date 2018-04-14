@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
@@ -35,6 +36,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     private GoogleMap mMap;
     private MapMVP.Presenter presenter;
+    private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
@@ -70,7 +72,12 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
         mMap.getUiSettings().setMapToolbarEnabled(false);
         presenter.loadFruits();
 
+        createGpsMarker(gdanskLatLng);
         createLocationUpdates();
+    }
+
+    private void createGpsMarker(final LatLng latLng) {
+        this.gpsMarker = new GpsMarker(mMap, latLng);
     }
 
     private void createLocationUpdates() {
@@ -115,6 +122,9 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     @Override
     public void onLocationChanged(final Location location) {
+        final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        gpsMarker.changePosition(currentLocation);
     }
 
     @Override
