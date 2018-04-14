@@ -1,5 +1,7 @@
 package com.szymon.hackathonapplication.models.challenges;
 
+import android.os.Parcel;
+
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppResources;
 
@@ -12,4 +14,21 @@ public class FruitTimeChallenge extends Challenge {
         howManyToCollect = 20;
         icon = AppResources.getDrawable(R.drawable.ic_fruit_challenge);
     }
+
+    protected FruitTimeChallenge(final Parcel in) {
+        super(in);
+    }
+
+
+    public static final Creator<Challenge> CREATOR = new Creator<Challenge>() {
+        @Override
+        public Challenge createFromParcel(final Parcel in) {
+            return new FruitTimeChallenge(in);
+        }
+
+        @Override
+        public Challenge[] newArray(final int size) {
+            return new Challenge[size];
+        }
+    };
 }

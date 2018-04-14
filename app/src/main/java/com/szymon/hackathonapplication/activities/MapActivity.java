@@ -1,6 +1,7 @@
 package com.szymon.hackathonapplication.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -72,7 +73,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity(){
         Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -85,6 +86,20 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                Challenge result = data.getParcelableExtra("result");
+                startChallengeMode(result);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Try again later!", Toast.LENGTH_SHORT);
+            }
+        }
     }
 
     @Override
