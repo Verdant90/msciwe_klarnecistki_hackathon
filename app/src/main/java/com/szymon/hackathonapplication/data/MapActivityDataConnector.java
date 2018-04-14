@@ -1,4 +1,4 @@
-package com.szymon.hackathonapplication;
+package com.szymon.hackathonapplication.data;
 
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 
