@@ -55,10 +55,18 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     public void showGeneratedFruits(final List<Fruit> fruits) {
         Marker fruitMarker;
         for (Fruit fruit : fruits) {
+            addFruitToMap(fruit);
             fruitMarker = mMap.addMarker(new MarkerOptions()
                     .position(fruit.location));
 
             fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
         }
+    }
+
+    private void addFruitToMap(final Fruit fruit) {
+        final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
+                .position(fruit.location));
+
+        fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
     }
 }
