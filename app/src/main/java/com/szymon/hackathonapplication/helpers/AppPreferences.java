@@ -4,8 +4,11 @@ package com.szymon.hackathonapplication.helpers;
 import android.content.SharedPreferences;
 
 import com.szymon.hackathonapplication.HackatonApplication;
+import com.szymon.hackathonapplication.models.levels.ExperienceLevelMapper;
 
 public class AppPreferences {
+
+    private static Callback callback;
 
     private static final String EXPLORATION_RANGE = "EXPLORATION_RANGE";
     private static final String TOTAL_YAB_COINS = "TOTAL_YAB_COINS";
@@ -18,13 +21,14 @@ public class AppPreferences {
     private static final String PEAR_CHALLENGES = "PEAR_CHALLENGES";
     private static final String PLUM_CHALLENGES = "PLUM_CHALLENGES";
     private static final String FRUIT_CHALLENGES = "FRUIT_CHALLENGES";
+    private static final String BASKET_VERSION = "BASKET_VERSION";
 
     private static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
     private static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
 
     private static final String EXPERIENCE_POINTS_BONUS_MULTIPLIER = "EXPERIENCE_POINTS_BONUS_MULTIPLIER";
     private static final float INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER = 1.0f;
-    public static final String BASKET_VERSION = "BASKET_VERSION";
+
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -38,6 +42,14 @@ public class AppPreferences {
         preferences = HackatonApplication.getSharedPreferences();
         preferencesEdit = preferences.edit();
         return instance;
+    }
+
+    public interface Callback {
+        void onLevelChanged();
+    }
+
+    public static void setCallback(final Callback callback) {
+        AppPreferences.callback = callback;
     }
 
     // Basket version
@@ -71,11 +83,17 @@ public class AppPreferences {
         setExperiencePoints(current + experiencePointsWithBonus);
     }
 
-    private static void setExperiencePoints(final long experiencePoints) {
+    public static void setExperiencePoints(final long experiencePoints) {
+        final int levelBefore = getLevel();
         preferencesEdit.putLong(EXPERIENCE_POINTS, experiencePoints).apply();
+        final int levelAfter = getLevel();
+
+        if (levelBefore != levelAfter) {
+            callback.onLevelChanged();
+        }
     }
 
-    private static long getExperiencePoints() {
+    public static long getExperiencePoints() {
         return preferences.getLong(EXPERIENCE_POINTS, 0);
     }
 
@@ -98,6 +116,13 @@ public class AppPreferences {
     public static float getExperienceBonusMultiplier() {
         return preferences
                 .getFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER);
+    }
+
+    // Levels
+
+    public static int getLevel() {
+        final long experience = getExperiencePoints();
+        return ExperienceLevelMapper.toLevel((int) experience);
     }
 
     // Yab Coins

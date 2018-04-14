@@ -45,6 +45,11 @@
             android:background="@drawable/gradient_map" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/text_current_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <mbanje.kurt.fabbutton.FabButton
         android:id="@+id/btn_current_location"
         android:layout_width="45dp"
