@@ -30,7 +30,7 @@ import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
-import com.szymon.hackathonapplication.models.shop.items.BasketVersionIconMapper;
+import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 

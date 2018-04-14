@@ -1,4 +1,4 @@
-package com.szymon.hackathonapplication.models.shop.items;
+package com.szymon.hackathonapplication.models.shop;
 
 import com.szymon.hackathonapplication.R;
 
