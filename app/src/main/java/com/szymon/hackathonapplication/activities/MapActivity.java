@@ -1,4 +1,4 @@
-package com.szymon.hackathonapplication;
+package com.szymon.hackathonapplication.activities;
 
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.szymon.hackathonapplication.R;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
