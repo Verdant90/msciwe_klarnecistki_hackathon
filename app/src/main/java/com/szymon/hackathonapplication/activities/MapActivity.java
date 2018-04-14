@@ -129,6 +129,12 @@ public class MapActivity extends FragmentActivity implements
         startActivityForResult(intent, 1);
     }
 
+    @OnClick(R.id.btn_statistics)
+    public void goToStatisticsActivity() {
+        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        startActivityForResult(intent, 1);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -188,7 +194,6 @@ public class MapActivity extends FragmentActivity implements
 
         createGpsMarker(gdanskLatLng);
         createLocationUpdates();
-        startChallengeMode(new PearTimeChallenge());
     }
 
     private void createGpsMarker(final LatLng latLng) {
