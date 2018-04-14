@@ -125,14 +125,14 @@ public class MapActivity extends FragmentActivity implements
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
-        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        final Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivityForResult(intent, 1);
     }
 
     @OnClick(R.id.btn_statistics)
     public void goToStatisticsActivity() {
-        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
-        startActivityForResult(intent, 1);
+        final Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     @Override

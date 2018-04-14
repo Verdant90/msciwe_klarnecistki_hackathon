@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <include
+        android:id="@+id/layout_stats_header"
+        layout="@layout/layout_stats_header"
+        app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ScrollView
+        android:id="@+id/scroll_view_layout_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/title_general"
+                style="@style/TextViewSeparator"
+                android:text="GENERAL"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+            <TextView
+                android:id="@+id/title_fruits"
+                style="@style/TextViewSeparator"
+                android:text="FRUITS"
+                app:layout_constraintTop_toBottomOf="@+id/title_general"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/title_challenges"
+                style="@style/TextViewSeparator"
+                android:text="CHALLENGES"
+                app:layout_constraintTop_toBottomOf="@+id/title_fruits"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/title_navigation"
+                style="@style/TextViewSeparator"
+                android:text="NAVIGATION"
+                app:layout_constraintTop_toBottomOf="@+id/title_challenges"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
