@@ -119,7 +119,7 @@ public class ChallengeActivity extends Activity {
                 holder.description.setText(challengeList.get(position).description);
                 holder.title.setText(challengeList.get(position).title);
                 holder.reward.setText(challengeList.get(position).pointsReward.toString());
-                holder.icon.setImageDrawable(challengeList.get(position).icon);
+                holder.icon.setImageDrawable(challengeList.get(position).getFruitIcon());
                 holder.startChallengeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(final View v) {

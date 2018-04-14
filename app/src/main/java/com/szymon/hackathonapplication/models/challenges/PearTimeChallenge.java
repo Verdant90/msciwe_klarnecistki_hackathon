@@ -14,13 +14,12 @@ public class PearTimeChallenge extends Challenge {
         description = "Collect 10 pears within 5 minutes.";
         title = "PEAR-TO-PEAR";
         howManyToCollect = 10;
-        icon = AppResources.getDrawable(R.drawable.ic_pear_challenge);
+        iconId = R.drawable.ic_pear_challenge;
     }
 
     protected PearTimeChallenge(final Parcel in) {
         super(in);
     }
-
 
     public static final Creator<Challenge> CREATOR = new Creator<Challenge>() {
         @Override

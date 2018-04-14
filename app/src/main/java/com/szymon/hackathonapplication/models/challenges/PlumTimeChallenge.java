@@ -12,7 +12,7 @@ public class PlumTimeChallenge extends Challenge {
         description = "Collect 10 plums within 5 minutes.";
         title = "PLUMmer Time";
         howManyToCollect = 10;
-        icon = AppResources.getDrawable(R.drawable.ic_plum_challenge);
+        iconId = R.drawable.ic_plum_challenge;
     }
 
     protected PlumTimeChallenge(final Parcel in) {

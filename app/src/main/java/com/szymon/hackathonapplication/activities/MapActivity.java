@@ -27,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
@@ -69,9 +70,10 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     public void tmpincrementPears() {
         updateCurrentChallenge(currentChallenge);
     }
+    private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
-    public void goToChallengeActivity(){
+    public void goToChallengeActivity() {
         Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivityForResult(intent, 1);
     }
@@ -80,6 +82,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         ButterKnife.bind(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -117,8 +120,13 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
         mMap.getUiSettings().setMapToolbarEnabled(false);
         presenter.loadFruits();
 
+        createGpsMarker(gdanskLatLng);
         createLocationUpdates();
         startChallengeMode(new PearTimeChallenge());
+    }
+
+    private void createGpsMarker(final LatLng latLng) {
+        this.gpsMarker = new GpsMarker(mMap, latLng);
     }
 
     private void createLocationUpdates() {
@@ -144,7 +152,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
             fruitMarker = mMap.addMarker(new MarkerOptions()
                     .position(fruit.location));
 
-            fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+            fruitMarker.setIcon(fruit.getFruitIcon());
         }
     }
 
@@ -170,7 +178,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
                 .position(fruit.location));
 
-        fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+        fruitMarker.setIcon(fruit.getFruitIcon());
     }
 
     public void startTimer(final int minutes) {
@@ -207,7 +215,7 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     private void setChallengeLayoutStyle(final Challenge challenge) {
         challengeLayout.setVisibility(VISIBLE);
-        challengeIcon.setImageDrawable(challenge.icon);
+        challengeIcon.setImageDrawable(challenge.getFruitIcon());
         challengeTitle.setText(challenge.title);
         challengeCurrentProgressTextView.setText("0/" + challenge.howManyToCollect);
     }
@@ -234,6 +242,9 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     @Override
     public void onLocationChanged(final Location location) {
+        final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        gpsMarker.changePosition(currentLocation);
     }
 
     @Override

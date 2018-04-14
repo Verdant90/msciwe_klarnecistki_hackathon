@@ -14,7 +14,7 @@ public class AppleTimeChallenge extends Challenge {
         description = "Collect 10 apples within 5 minutes.";
         title = "iCHALLENGE";
         howManyToCollect = 10;
-        icon = AppResources.getDrawable(R.drawable.ic_apple_challenge);
+        iconId = R.drawable.ic_apple_challenge;
     }
 
     protected AppleTimeChallenge(final Parcel in) {

@@ -12,7 +12,7 @@ public class FruitTimeChallenge extends Challenge {
         description = "Collect 20 fruits within 5 minutes.";
         title = "GASTROPHASE";
         howManyToCollect = 20;
-        icon = AppResources.getDrawable(R.drawable.ic_fruit_challenge);
+        iconId = R.drawable.ic_fruit_challenge;
     }
 
     protected FruitTimeChallenge(final Parcel in) {

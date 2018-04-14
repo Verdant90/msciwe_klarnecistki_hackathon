@@ -13,9 +13,12 @@ public abstract class Challenge implements Parcelable {
     public int timeInMinutes;
     public int howManyToCollect;
     public Integer pointsReward;
-    public Drawable icon;
     public Integer  iconId;
-    
+
+    public Drawable getFruitIcon() {
+        return AppResources.getDrawable(iconId);
+    }
+
     public Challenge() {
 
     }
@@ -26,6 +29,8 @@ public abstract class Challenge implements Parcelable {
         description = in.readString();
         title = in.readString();
         howManyToCollect = in.readInt();
+        iconId = in.readInt();
+
     }
 
     @Override
@@ -35,6 +40,7 @@ public abstract class Challenge implements Parcelable {
         dest.writeString(description);
         dest.writeString(title);
         dest.writeInt(howManyToCollect);
+        dest.writeInt(iconId);
     }
 
     @Override
