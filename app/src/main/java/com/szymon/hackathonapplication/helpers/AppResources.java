@@ -15,10 +15,11 @@ public class AppResources {
         resources = HackatonApplication.getContext().getResources();
     }
 
-    public static void initInstance() {
+    public static AppResources getInstance() {
         if (instance == null) {
             instance = new AppResources();
         }
+        return instance;
     }
 
     public static Drawable getDrawable(final int drawableId) {
