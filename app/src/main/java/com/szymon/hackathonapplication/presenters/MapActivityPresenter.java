@@ -1,7 +1,7 @@
 package com.szymon.hackathonapplication.presenters;
 
 
-import com.szymon.hackathonapplication.MapActivityDataConnector;
+import com.szymon.hackathonapplication.data.MapActivityDataConnector;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 
 public class MapActivityPresenter implements MapMVP.Presenter {
