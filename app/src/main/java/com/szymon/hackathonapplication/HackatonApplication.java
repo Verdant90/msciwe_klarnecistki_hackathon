@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.AppResources;
 
 import java.lang.ref.WeakReference;
@@ -19,7 +20,8 @@ public class HackatonApplication extends Application {
         super.onCreate();
         sharedPreferences = getSharedPreferences(HACKATON_APPLICATION_PREFERENCES, MODE_PRIVATE);
         sApplication = new WeakReference<Application>(this);
-        AppResources.initInstance();
+        AppResources.getInstance();
+        AppPreferences.getInstance();
     }
 
     public static Application getApplication() {
