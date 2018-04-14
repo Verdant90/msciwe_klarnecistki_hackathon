@@ -36,6 +36,12 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     private GoogleMap mMap;
     private MapMVP.Presenter presenter;
 
+    @OnClick(R.id.btn_challenges)
+    public void goToChallengeActivity(){
+        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
