@@ -83,11 +83,6 @@ public class MapActivity extends FragmentActivity implements
     private int challengeCount = 0;
     private boolean challengeMode;
 
-    @OnClick(R.id.TMP_increment_pears)
-    public void tmpincrementPears() {
-        updateCurrentChallenge(currentChallenge);
-    }
-
     @OnClick(R.id.btn_map_mode)
     public void switchMapMode() {
         if (mapModeNormal) {
@@ -223,16 +218,25 @@ public class MapActivity extends FragmentActivity implements
         FruitsDao.addFruits(fruits);
     }
 
-    @Override
-    public void updateCurrentChallenge(final Challenge currentChallenge) {
+    public void updateCurrentChallenge(final List<Fruit> fruitsEaten) {
         if (challengeMode) {
-            challengeCount++;
+            challengeCount = challengeCount + fruitsEatenForCullentChallenge(fruitsEaten);
             if (challengeCount == currentChallenge.howManyToCollect) {
                 endChallengeMode(true);
             } else {
                 challengeCurrentProgressTextView.setText(challengeCount + "/" + currentChallenge.howManyToCollect);
             }
         }
+    }
+
+    private int fruitsEatenForCullentChallenge(final List<Fruit> fruitsEaten) {
+        int counter = 0;
+        for (final Fruit fruit : fruitsEaten) {
+            if (currentChallenge.fruitTypes.contains(fruit.getType())) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     @OnClick(R.id.button_shop)
@@ -316,7 +320,8 @@ public class MapActivity extends FragmentActivity implements
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
-        FruitsDao.removeFruitsInRange(location);
+        final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
+        updateCurrentChallenge(fruitsRemoved);
     }
 
     @Override
