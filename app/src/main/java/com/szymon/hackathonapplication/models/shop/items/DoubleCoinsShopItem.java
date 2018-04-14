@@ -20,8 +20,8 @@ public class DoubleCoinsShopItem extends ShopItem {
     private CountDownTimer timer;
 
     public DoubleCoinsShopItem(final Callback callback) {
-        super("DoubleCoins",
-                "Receive double coins in next 5 minutes.",
+        super("Money Maker",
+                "Receive double coins \nin the next 5 minutes.",
                 ShopItemPriceMapper.toPrice(DoubleCoinsShopItem.class), R.drawable.ic_double_yabcoins,
                 callback);
 

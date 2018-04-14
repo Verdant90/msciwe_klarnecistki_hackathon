@@ -14,7 +14,7 @@
         android:id="@+id/text_challenges"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Challenges"
+        android:text="My Shop"
         android:textSize="30sp"
         android:textAllCaps="true"
         android:textStyle="bold"

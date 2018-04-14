@@ -20,7 +20,7 @@ public class DoubleExperienceShopItem extends ShopItem {
     private CountDownTimer timer;
 
     public DoubleExperienceShopItem(final Callback callback) {
-        super("DoubleExperience",
+        super("Fruit frenzy!\n",
                 "Receive double the experience \nin the next 5 minutes.",
                 ShopItemPriceMapper.toPrice(DoubleExperienceShopItem.class), R.drawable.ic_double_exp,
                 callback);

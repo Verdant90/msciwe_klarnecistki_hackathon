@@ -20,7 +20,7 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
         super("More fruits nearby",
-                String.format("Show %d more fruits nearby.", FRUITS_COUNT),
+                String.format("Spawn %d fruits nearby.", FRUITS_COUNT),
                 ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class), R.drawable.ic_more_apples,
                 callback);
     }
