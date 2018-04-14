@@ -26,11 +26,19 @@ public class AppResources {
         return instance;
     }
 
+    public static String getString(final int id) {
+        return resources.getString(id);
+    }
+
+    public static String getString(final int id, final Object... formatArgs) {
+        return resources.getString(id, formatArgs);
+    }
+
     public static Drawable getDrawable(final int drawableId) {
         return resources.getDrawable(drawableId);
     }
 
-    public static BitmapDescriptor getBitmapDescriptor(final int resId){
+    public static BitmapDescriptor getBitmapDescriptor(final int resId) {
         final Drawable drawable = AppResources.getDrawable(resId);
         final Canvas canvas = new Canvas();
         final Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
