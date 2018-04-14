@@ -8,7 +8,7 @@ public class Pear extends Fruit {
 
     public Pear(final LatLng location) {
         super(location);
-        this.iconResId = R.drawable.ic_apple;
+        this.iconResId = R.drawable.ic_pear;
         this.pointsReward = 2L;
         this.experience = 2;
     }

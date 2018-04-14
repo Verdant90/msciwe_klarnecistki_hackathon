@@ -7,7 +7,7 @@ public class Plum extends Fruit {
 
     public Plum(final LatLng location) {
         super(location);
-        this.iconResId = R.drawable.ic_apple;
+        this.iconResId = R.drawable.ic_plum;
         this.pointsReward = 3L;
         this.experience = 3;
     }
