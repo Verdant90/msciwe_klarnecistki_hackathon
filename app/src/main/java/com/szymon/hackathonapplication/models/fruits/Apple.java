@@ -8,8 +8,8 @@ public class Apple extends Fruit {
     public Apple(final LatLng location) {
         super(location);
         this.iconResId = R.drawable.ic_apple;
-        this.pointsReward = 1L;
-        this.experience = 1;
+        this.yabCoinsReward = 1L;
+        this.experienceReward = 1;
     }
 
     @Override

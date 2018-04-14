@@ -8,8 +8,8 @@ public class Plum extends Fruit {
     public Plum(final LatLng location) {
         super(location);
         this.iconResId = R.drawable.ic_plum;
-        this.pointsReward = 3L;
-        this.experience = 3;
+        this.yabCoinsReward = 3L;
+        this.experienceReward = 3;
     }
 
     @Override
