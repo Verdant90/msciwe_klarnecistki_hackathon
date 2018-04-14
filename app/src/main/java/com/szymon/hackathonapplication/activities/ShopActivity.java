@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 public class ShopActivity extends Activity implements ShopItem.Callback {
 
     @BindView(R.id.list_shop_items)
-    ListView shopItemsListView;
+    GridView shopItemsListView;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
