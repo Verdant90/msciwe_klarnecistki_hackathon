@@ -14,7 +14,7 @@ public class BasketUpgradeShopItem extends ShopItem {
     public BasketUpgradeShopItem(final Callback callback) {
         super("Basket Case",
                 "Upgrade your basket \ntoo a nicer version :)",
-                ShopItemPriceMapper.toPrice(BasketUpgradeShopItem.class), R.drawable.ic_apple,
+                ShopItemPriceMapper.toPrice(BasketUpgradeShopItem.class), R.drawable.basket_plus,
                 callback);
     }
 

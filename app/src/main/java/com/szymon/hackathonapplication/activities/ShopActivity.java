@@ -37,6 +37,8 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
 
     @BindView(R.id.list_shop_items)
     GridView shopItemsListView;
+    @BindView(R.id.text_current_money)
+    TextView textCurrentMoney;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -44,6 +46,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
         setContentView(R.layout.activity_shop);
         ButterKnife.bind(this);
         setUpShopItemsAdapter();
+        textCurrentMoney.setText(Long.toString(AppPreferences.getYabCoins()));
     }
 
     private void setUpShopItemsAdapter() {
