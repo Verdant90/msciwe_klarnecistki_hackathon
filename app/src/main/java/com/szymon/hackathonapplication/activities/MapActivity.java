@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,14 +23,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
+import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
@@ -53,6 +51,7 @@ public class MapActivity extends FragmentActivity implements
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
+
     @BindView(R.id.text_challenge_timer)
     TextView challengeTimer;
     @BindView(R.id.layout_challenge_panel)
@@ -72,6 +71,7 @@ public class MapActivity extends FragmentActivity implements
     public void tmpincrementPears() {
         updateCurrentChallenge(currentChallenge);
     }
+
     private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
@@ -97,7 +97,7 @@ public class MapActivity extends FragmentActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (requestCode == 1) {
-            if(resultCode == Activity.RESULT_OK){
+            if (resultCode == Activity.RESULT_OK) {
                 Challenge result = data.getParcelableExtra("result");
                 startChallengeMode(result);
             }
@@ -148,14 +148,10 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void showGeneratedFruits(final List<Fruit> fruits) {
-        Marker fruitMarker;
         for (Fruit fruit : fruits) {
-            addFruitToMap(fruit);
-            fruitMarker = mMap.addMarker(new MarkerOptions()
-                    .position(fruit.location));
-
-            fruitMarker.setIcon(fruit.getFruitIcon());
+            fruit.drawOnMap(mMap);
         }
+        FruitsDao.addFruits(fruits);
     }
 
     @Override
@@ -183,13 +179,7 @@ public class MapActivity extends FragmentActivity implements
         for (final Fruit fruit : fruits) {
             fruit.drawOnMap(mMap);
         }
-    }
-
-    private void addFruitToMap(final Fruit fruit) {
-        final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
-                .position(fruit.location));
-
-        fruitMarker.setIcon(fruit.getFruitIcon());
+        FruitsDao.addFruits(fruits);
     }
 
     public void startTimer(final int minutes) {
@@ -256,6 +246,8 @@ public class MapActivity extends FragmentActivity implements
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
+
+        FruitsDao.removeFruitsInRange(location);
     }
 
     @Override

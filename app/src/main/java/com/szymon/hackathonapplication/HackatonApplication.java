@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 
 import java.lang.ref.WeakReference;
 
@@ -22,6 +23,7 @@ public class HackatonApplication extends Application {
         sApplication = new WeakReference<Application>(this);
         AppResources.getInstance();
         AppPreferences.getInstance();
+        FruitsDao.getInstance();
     }
 
     public static Application getApplication() {
