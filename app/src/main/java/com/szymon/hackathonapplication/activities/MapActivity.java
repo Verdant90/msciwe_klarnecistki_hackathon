@@ -1,5 +1,6 @@
 package com.szymon.hackathonapplication.activities;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
@@ -38,5 +39,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        // TODO TCI should be replace by dedicated button on map layout
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                startActivity(new Intent(MapActivity.this, ShopActivity.class));
+            }
+        });
     }
 }
