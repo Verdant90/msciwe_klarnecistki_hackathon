@@ -7,7 +7,7 @@ import java.util.Random;
 public class LocationFactory {
 
     public LatLng getRandomLocation(final LatLng northWest, final LatLng southEast) {
-        Random rand = new Random();
+        final Random rand = new Random();
         final double minLat = northWest.latitude;
         final double minLng = northWest.longitude;
         final double latRange = southEast.latitude - minLat;
