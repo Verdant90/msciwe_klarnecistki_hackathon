@@ -14,6 +14,8 @@ public class AppPreferences {
     private static final String PEAR_COUNT = "PEAR_COUNT";
     private static final String PLUM_COUNT = "PLUM_COUNT";
     private static final String EXPERIENCE_POINTS = "EXPERIENCE_POINTS";
+    public static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
+    public static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -56,33 +58,51 @@ public class AppPreferences {
 
     // Yab Coins
 
-    public void addYabCoins(final long coins) {
+    public static void addYabCoins(final long coins) {
         final long current = getYabCoins();
         final long currentTotal = getTotalYabCoins();
 
-        preferencesEdit.putLong(YAB_COINS, current + coins).apply();
-        preferencesEdit.putLong(TOTAL_YAB_COINS, currentTotal + coins).apply();
+        final long coinsWithBonus = (long) (coins * getYabCoinsBonusMultiplier());
+        preferencesEdit.putLong(YAB_COINS, current + coinsWithBonus).apply();
+        preferencesEdit.putLong(TOTAL_YAB_COINS, currentTotal + coinsWithBonus).apply();
     }
 
-    public void spendYabCoins(final long coins) {
+    public static void spendYabCoins(final long coins) {
         final long current = getYabCoins();
         preferencesEdit.putLong(YAB_COINS, current - coins).apply();
     }
 
-    private void setTotalYabCoins(final long coins) {
+    private static void setTotalYabCoins(final long coins) {
         preferencesEdit.putLong(TOTAL_YAB_COINS, coins).apply();
     }
 
-    public long getTotalYabCoins() {
+    public static long getTotalYabCoins() {
         return preferences.getLong(TOTAL_YAB_COINS, 0);
     }
 
-    private void setYabCoins(final long coins) {
+    private static void setYabCoins(final long coins) {
         preferencesEdit.putLong(YAB_COINS, coins).apply();
     }
 
-    public long getYabCoins() {
+    public static long getYabCoins() {
         return preferences.getLong(YAB_COINS, 0);
+    }
+
+    public static void setYabCoinsBonusMultiplier(final float bonusMultiplier) {
+        preferencesEdit
+                .putFloat(YAB_COINS_BONUS_MULTIPLIER, bonusMultiplier)
+                .apply();
+    }
+
+    public static void resetYabCoinsBonusMultiplier() {
+        preferencesEdit
+                .putFloat(YAB_COINS_BONUS_MULTIPLIER, INITIAL_YAB_COINS_BONUS_MULTIPLIER)
+                .apply();
+    }
+
+    public static float getYabCoinsBonusMultiplier() {
+        return preferences
+                .getFloat(YAB_COINS_BONUS_MULTIPLIER, INITIAL_YAB_COINS_BONUS_MULTIPLIER);
     }
 
     // Apple
