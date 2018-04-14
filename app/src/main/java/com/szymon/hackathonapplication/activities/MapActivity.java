@@ -1,6 +1,7 @@
 package com.szymon.hackathonapplication.activities;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -8,8 +9,14 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,14 +29,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
+import com.szymon.hackathonapplication.models.challenges.Challenge;
+import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import mbanje.kurt.fabbutton.FabButton;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
@@ -38,12 +51,33 @@ public class MapActivity extends FragmentActivity implements
     private static GoogleMap mMap;
     private static LatLng location;
     private MapMVP.Presenter presenter;
+    private Challenge currentChallenge;
+    private CountDownTimer challengeTimerCountDown;
+    @BindView(R.id.text_challenge_timer)
+    TextView challengeTimer;
+    @BindView(R.id.layout_challenge_panel)
+    LinearLayout challengeLayout;
+    @BindView(R.id.image_challenge_icon)
+    ImageView challengeIcon;
+    @BindView(R.id.text_challenge_title)
+    TextView challengeTitle;
+    @BindView(R.id.text_challenge_current_score)
+    TextView challengeCurrentProgressTextView;
+    @BindView(R.id.btn_challenges)
+    FabButton challengesButton;
+    private int challengeCount = 0;
+    private boolean challengeMode;
+
+    @OnClick(R.id.TMP_increment_pears)
+    public void tmpincrementPears() {
+        updateCurrentChallenge(currentChallenge);
+    }
     private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
         Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, 1);
     }
 
     @Override
@@ -57,6 +91,20 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                Challenge result = data.getParcelableExtra("result");
+                startChallengeMode(result);
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                Toast.makeText(this, "Try again later!", Toast.LENGTH_SHORT);
+            }
+        }
     }
 
     @Override
@@ -76,6 +124,7 @@ public class MapActivity extends FragmentActivity implements
 
         createGpsMarker(gdanskLatLng);
         createLocationUpdates();
+        startChallengeMode(new PearTimeChallenge());
     }
 
     private void createGpsMarker(final LatLng latLng) {
@@ -109,6 +158,18 @@ public class MapActivity extends FragmentActivity implements
         }
     }
 
+    @Override
+    public void updateCurrentChallenge(final Challenge currentChallenge) {
+        if (challengeMode) {
+            challengeCount++;
+            if (challengeCount == currentChallenge.howManyToCollect) {
+                endChallengeMode(true);
+            } else {
+                challengeCurrentProgressTextView.setText(challengeCount + "/" + currentChallenge.howManyToCollect);
+            }
+        }
+    }
+
     @OnClick(R.id.button_shop)
     public void goToShopButton() {
         startActivity(new Intent(this, ShopActivity.class));
@@ -132,6 +193,65 @@ public class MapActivity extends FragmentActivity implements
                 .position(fruit.location));
 
         fruitMarker.setIcon(fruit.getFruitIcon());
+    }
+
+    public void startTimer(final int minutes) {
+        final int millis = minutes * 60 * 1000;
+        challengeTimerCountDown = new CountDownTimer(millis, 1000) {
+
+            public void onTick(final long millisUntilFinished) {
+                int secs = (int) (millisUntilFinished / 1000);
+                int mins = secs / 60;
+                secs = secs % 60;
+                updateTimer(getString(R.string.flight_time_format, mins, String.format("%02d", secs)));
+            }
+
+            public void onFinish() {
+                endChallengeMode(false);
+            }
+        };
+        challengeTimerCountDown.start();
+    }
+
+    private void updateTimer(final String timeLeft) {
+        challengeTimer.setText(timeLeft);
+    }
+
+    public void startChallengeMode(final Challenge challenge) {
+        challengeMode = true;
+        currentChallenge = challenge;
+        challengesButton.setClickable(false);
+        challengesButton.setEnabled(false);
+        challengesButton.setAlpha(0.5f);
+        setChallengeLayoutStyle(challenge);
+        startTimer(challenge.timeInMinutes);
+    }
+
+    private void setChallengeLayoutStyle(final Challenge challenge) {
+        challengeLayout.setVisibility(VISIBLE);
+        challengeIcon.setImageDrawable(challenge.getFruitIcon());
+        challengeTitle.setText(challenge.title);
+        challengeCurrentProgressTextView.setText("0/" + challenge.howManyToCollect);
+    }
+
+    public void endChallengeMode(boolean success) {
+        challengeMode = false;
+        currentChallenge = null;
+        challengesButton.setClickable(true);
+        challengesButton.setEnabled(true);
+        challengesButton.setAlpha(1f);
+        challengeTimerCountDown.cancel();
+        challengeLayout.setVisibility(GONE);
+        challengeCount = 0;
+        if (success) {
+            //TODO!!!
+            //showSuccessMessage();
+            //receiveReward();
+            Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
+        } else {
+            //showFailureMessage();
+            Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

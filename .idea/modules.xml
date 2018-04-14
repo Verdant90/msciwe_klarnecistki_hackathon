@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://C:/Users/u588989/StudioProjects/msciwe_klarnecistki_hackathon/HACKATHON.iml" filepath="C:/Users/u588989/StudioProjects/msciwe_klarnecistki_hackathon/HACKATHON.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HACKATHON.iml" filepath="$PROJECT_DIR$/HACKATHON.iml" />
+      <module fileurl="file://C:\Users\u588989\StudioProjects\msciwe_klarnecistki_hackathon\HACKATHON.iml" filepath="C:\Users\u588989\StudioProjects\msciwe_klarnecistki_hackathon\HACKATHON.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/msciwe_klarnecistki_hackathon.iml" filepath="$PROJECT_DIR$/msciwe_klarnecistki_hackathon.iml" />
-      <module fileurl="file://C:/Users/U102959/Desktop/HACKATHON/msciwe_klarnecistki_hackathon.iml" filepath="C:/Users/U102959/Desktop/HACKATHON/msciwe_klarnecistki_hackathon.iml" />
+      <module fileurl="file://C:\Users\U102959\Desktop\HACKATHON\msciwe_klarnecistki_hackathon.iml" filepath="C:\Users\U102959\Desktop\HACKATHON\msciwe_klarnecistki_hackathon.iml" />
     </modules>
   </component>
 </project>

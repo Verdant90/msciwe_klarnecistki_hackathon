@@ -3,4 +3,5 @@
     <string name="title_activity_map">Map</string>
     <string name="purchase">Purchase</string>
     <string name="start">Start</string>
+    <string name="flight_time_format">%d:%s</string>
 </resources>
