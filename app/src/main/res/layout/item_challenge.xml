@@ -5,7 +5,7 @@
     android:background="@color/white"
     android:padding="5dp"
     android:layout_width="match_parent"
-    android:layout_height="100dp">
+    android:layout_height="90dp">
 
     <ImageView
         android:id="@+id/image_challenge_icon"
@@ -15,7 +15,7 @@
         app:layout_constraintEnd_toEndOf="@id/guideline_photo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@drawable/ic_apple" />
+        tools:src="@drawable/ic_apple_challenge" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_photo"
@@ -29,20 +29,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.23" />
+        app:layout_constraintGuide_percent="0.21" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline_button_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.8" />
+        app:layout_constraintGuide_percent="0.73" />
 
     <TextView
         android:id="@+id/text_challenge_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/text_challenge_description"
         app:layout_constraintEnd_toEndOf="@+id/guideline_button_start"
@@ -56,7 +56,7 @@
         android:id="@+id/text_challenge_description"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="13sp"
+        android:textSize="11sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/guideline_button_start"
         app:layout_constraintHorizontal_bias="0"
@@ -64,18 +64,31 @@
         app:layout_constraintTop_toBottomOf="@+id/text_challenge_title"
         tools:text="This is the challenge description \nLorem ipsum " />
 
+    <TextView
+        android:id="@+id/text_reward"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:textStyle="bold"
+        android:text="REWARD: "
+        android:textSize="11sp"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintBottom_toTopOf="@+id/image_jablcoin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_button_start"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/image_jablcoin"
         android:layout_width="20dp"
         android:layout_height="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:src="@drawable/yabcoin"
         app:layout_constraintBottom_toTopOf="@+id/button_start_challenge"
         app:layout_constraintEnd_toStartOf="@+id/text_challenge_reward"
         app:layout_constraintHorizontal_chainStyle="packed"
-        app:layout_constraintStart_toStartOf="@+id/guideline_button_start"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/guideline_button_start"
+        app:layout_constraintTop_toBottomOf="@+id/text_reward"/>
 
     <TextView
         android:id="@+id/text_challenge_reward"
@@ -87,7 +100,7 @@
         app:layout_constraintBottom_toTopOf="@+id/button_start_challenge"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/image_jablcoin"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_reward"
         tools:text="20" />
 
     <Button
