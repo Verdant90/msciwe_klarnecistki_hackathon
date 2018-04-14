@@ -30,6 +30,7 @@
 
         <activity
             android:name=".activities.MapActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_map">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -38,7 +39,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.ShopActivity" />
+        <activity android:name=".activities.ShopActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -1,8 +1,15 @@
 package com.szymon.hackathonapplication.activities;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -22,7 +29,9 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MapActivity extends FragmentActivity implements OnMapReadyCallback, MapMVP.View {
+import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
+
+public class MapActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback, MapMVP.View {
 
     private GoogleMap mMap;
     private MapMVP.Presenter presenter;
@@ -53,6 +62,23 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
         presenter.loadFruits();
+
+        createLocationUpdates();
+    }
+
+    private void createLocationUpdates() {
+        final LocationManager locationManager = getLocationManagerService();
+        if (locationManager == null) return;
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestFineLocationPermission(this);
+            return;
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+    }
+
+    private LocationManager getLocationManagerService() {
+        return (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     }
 
     @Override
@@ -78,5 +104,24 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
                 .position(fruit.location));
 
         fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
+    }
+
+    @Override
+    public void onLocationChanged(final Location location) {
+    }
+
+    @Override
+    public void onStatusChanged(final String s, final int i, final Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(final String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(final String s) {
+
     }
 }
