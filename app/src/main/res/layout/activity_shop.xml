@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <ListView
-        android:id="@+id/list_show_items"
+        android:id="@+id/list_shop_items"
         android:layout_marginTop="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"
