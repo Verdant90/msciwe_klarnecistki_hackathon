@@ -7,11 +7,17 @@ import com.szymon.hackathonapplication.models.fruits.Pear;
 import com.szymon.hackathonapplication.models.fruits.Plum;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import static com.szymon.hackathonapplication.helpers.map.MapUtils.distanceBetween;
 
 public class FruitFactory {
+
+    private static final FruitFactory fruitFactory = new FruitFactory();
+
+    private static final Random random = new Random(System.currentTimeMillis());
 
     private static final int APPROX_NUMBER_OF_APPLES_PER_10_KM  = 20;
     private static final int APPROX_NUMBER_OF_PEARS_PER_10_KM  = 13;
@@ -19,8 +25,26 @@ public class FruitFactory {
 
     private LocationFactory locationFactory;
 
-    public FruitFactory() {
+    private FruitFactory() { // singleton
         this.locationFactory = new LocationFactory();
+    }
+
+    public static FruitFactory getInstance() {
+        return fruitFactory;
+    }
+
+    public List<Fruit> getFruits(final LatLng northWestCorner, final LatLng southEastCorner, int fruitsCount) {
+        final List<Fruit> fruits = new LinkedList<>();
+        for (int i = 0; i < fruitsCount; i++) {
+            final LatLng randomLocation = locationFactory.getRandomLocation(northWestCorner, southEastCorner);
+            switch (random.nextInt(3)) {
+                case 0: fruits.add(new Apple(randomLocation)); break;
+                case 1: fruits.add(new Pear(randomLocation)); break;
+                case 2: fruits.add(new Plum(randomLocation)); break;
+                default: throw new IllegalStateException("Random returned incorrect value!");
+            }
+        }
+        return fruits;
     }
 
     public List<Fruit> getFruits(final LatLng northWestCorner, final LatLng southEastCorner) {

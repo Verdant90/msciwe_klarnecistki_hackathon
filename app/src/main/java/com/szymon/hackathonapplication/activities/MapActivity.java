@@ -45,9 +45,11 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
-public class MapActivity extends FragmentActivity implements LocationListener, OnMapReadyCallback, MapMVP.View {
+public class MapActivity extends FragmentActivity implements
+        LocationListener, OnMapReadyCallback, MapMVP.View {
 
-    private GoogleMap mMap;
+    private static GoogleMap mMap;
+    private static LatLng location;
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
@@ -170,9 +172,21 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
 
     @OnClick(R.id.button_shop)
     public void goToShopButton() {
-        startActivity(new Intent(MapActivity.this, ShopActivity.class));
+        startActivity(new Intent(this, ShopActivity.class));
     }
 
+    public static LatLng currentLocation() {
+        return location;
+    }
+
+    public static void addFruitsToMap(final List<Fruit> fruits) {
+        for (final Fruit fruit : fruits) {
+            mMap.addMarker(new MarkerOptions()
+                    .position(fruit.location)
+                    .icon(fruit.getFruitIcon())
+            );
+        }
+    }
 
     private void addFruitToMap(final Fruit fruit) {
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
@@ -243,8 +257,8 @@ public class MapActivity extends FragmentActivity implements LocationListener, O
     @Override
     public void onLocationChanged(final Location location) {
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
         gpsMarker.changePosition(currentLocation);
+        this.location = currentLocation;
     }
 
     @Override
