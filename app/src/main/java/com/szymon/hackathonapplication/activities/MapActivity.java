@@ -12,8 +12,10 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +53,16 @@ public class MapActivity extends FragmentActivity implements
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
+    private boolean mapModeNormal = true;
+    private static final float MIN_ZOOM_PREFERENCE = 12f;
+    private static final float MIN_ZOOM_PREFERENCE_3D_MODE = 16f;
 
+    @BindView(R.id.sky)
+    RelativeLayout skyLayout;
+    @BindView(R.id.map_gradient)
+    View mapGradientView;
+    @BindView(R.id.btn_map_mode)
+    FabButton toggleStylesButton;
     @BindView(R.id.text_challenge_timer)
     TextView challengeTimer;
     @BindView(R.id.layout_challenge_panel)
@@ -74,7 +85,40 @@ public class MapActivity extends FragmentActivity implements
 
     @OnClick(R.id.btn_map_mode)
     public void switchMapMode() {
-        Toast.makeText(this, "AAa", Toast.LENGTH_SHORT).show();
+        if (mapModeNormal) {
+            switchToMapMode3d();
+        } else {
+            switchToMapModeNormal();
+        }
+        mapModeNormal = !mapModeNormal;
+    }
+
+    private void switchToMapModeNormal() {
+        skyLayout.setVisibility(GONE);
+        mapGradientView.setVisibility(GONE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_3d, R.drawable.ic_map_3d);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .bearing(0)
+                .tilt(0)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void switchToMapMode3d() {
+        skyLayout.setVisibility(VISIBLE);
+        mapGradientView.setVisibility(VISIBLE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .tilt(67.5f)
+                .bearing(mMap.getCameraPosition().bearing)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE_3D_MODE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private GpsMarker gpsMarker;
