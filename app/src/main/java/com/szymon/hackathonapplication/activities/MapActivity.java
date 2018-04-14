@@ -72,6 +72,11 @@ public class MapActivity extends FragmentActivity implements
         updateCurrentChallenge(currentChallenge);
     }
 
+    @OnClick(R.id.btn_map_mode)
+    public void switchMapMode() {
+        Toast.makeText(this, "AAa", Toast.LENGTH_SHORT).show();
+    }
+
     private GpsMarker gpsMarker;
 
     @OnClick(R.id.btn_challenges)
