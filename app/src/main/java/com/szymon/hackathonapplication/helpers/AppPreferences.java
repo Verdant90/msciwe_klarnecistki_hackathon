@@ -20,6 +20,7 @@ public class AppPreferences {
 
     private static final String EXPERIENCE_POINTS_BONUS_MULTIPLIER = "EXPERIENCE_POINTS_BONUS_MULTIPLIER";
     private static final float INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER = 1.0f;
+    public static final String BASKET_VERSION = "BASKET_VERSION";
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -33,6 +34,19 @@ public class AppPreferences {
         preferences = HackatonApplication.getSharedPreferences();
         preferencesEdit = preferences.edit();
         return instance;
+    }
+
+    // Basket version
+
+    public static Integer getBasketVersion() {
+        return preferences
+                .getInt(BASKET_VERSION, 0);
+    }
+
+    public static void increaseBasketVersion() {
+        preferencesEdit
+                .putInt(BASKET_VERSION, getBasketVersion() + 1)
+                .apply();
     }
 
     // Exploration Range
