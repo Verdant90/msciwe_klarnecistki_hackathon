@@ -14,6 +14,10 @@ public class AppPreferences {
     private static final String PEAR_COUNT = "PEAR_COUNT";
     private static final String PLUM_COUNT = "PLUM_COUNT";
     private static final String EXPERIENCE_POINTS = "EXPERIENCE_POINTS";
+    private static final String APPLE_CHALLENGES = "APPLE_CHALLENGES";
+    private static final String PEAR_CHALLENGES = "PEAR_CHALLENGES";
+    private static final String PLUM_CHALLENGES = "PLUM_CHALLENGES";
+    private static final String FRUIT_CHALLENGES = "FRUIT_CHALLENGES";
 
     private static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
     private static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
@@ -194,4 +198,59 @@ public class AppPreferences {
         final long current = getPlumCount();
         setPlumCount(current + 1);
     }
+
+    // Challenges
+
+    private static void setAppleChallengeCount(final long points) {
+        preferencesEdit.putLong(APPLE_CHALLENGES, points).apply();
+    }
+
+    public static long getAppleChallengeCount() {
+        return preferences.getLong(APPLE_CHALLENGES, 0);
+    }
+
+    public static void increaseAppleChallengeCount() {
+        long current = getAppleChallengeCount();
+        preferencesEdit.putLong(APPLE_CHALLENGES, current + 1).apply();
+    }
+
+    private static void setPearChallengeCount(final long points) {
+        preferencesEdit.putLong(PEAR_CHALLENGES, points).apply();
+    }
+
+    public static long getPearChallengeCount() {
+        return preferences.getLong(PEAR_CHALLENGES, 0);
+    }
+
+    public static void increasePearChallengeCount() {
+        long current = getPearChallengeCount();
+        preferencesEdit.putLong(PEAR_CHALLENGES, current + 1).apply();
+    }
+
+    private static void setPlumChallengeCount(final long points) {
+        preferencesEdit.putLong(PLUM_CHALLENGES, points).apply();
+    }
+
+    public static long getPlumChallengeCount() {
+        return preferences.getLong(PLUM_CHALLENGES, 0);
+    }
+
+    public static void increasePlumChallengeCount(){
+        long current = getPlumChallengeCount();
+        preferencesEdit.putLong(PLUM_CHALLENGES, current +1).apply();
+    }
+
+    private static void setFruitChallengeCount(final long points) {
+        preferencesEdit.putLong(FRUIT_CHALLENGES, points).apply();
+    }
+
+    public static long getFruitChallengeCount() {
+        return preferences.getLong(FRUIT_CHALLENGES, 0);
+    }
+
+    public static void increaseFruitChallengeCount() {
+        long current = getFruitChallengeCount();
+        preferencesEdit.putLong(FRUIT_CHALLENGES, current+1);
+    }
+
 }

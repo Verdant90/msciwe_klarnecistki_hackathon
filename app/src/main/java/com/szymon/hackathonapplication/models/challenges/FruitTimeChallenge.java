@@ -3,9 +3,15 @@ package com.szymon.hackathonapplication.models.challenges;
 import android.os.Parcel;
 
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.models.fruits.FruitType;
 
 public class FruitTimeChallenge extends Challenge {
+    @Override
+    public void applyRewardEffect() {
+        AppPreferences.increaseFruitChallengeCount();
+    }
+
     public FruitTimeChallenge() {
         fruitTypes.add(FruitType.APPLE);
         fruitTypes.add(FruitType.PEAR);
