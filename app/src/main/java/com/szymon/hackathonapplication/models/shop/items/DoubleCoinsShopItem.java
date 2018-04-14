@@ -13,14 +13,14 @@ public class DoubleCoinsShopItem extends ShopItem {
 
     private static final int MINUTE = 1000 * 60;
     private static final int FIVE_MINUTES = MINUTE * 5;
-    private static final float bonus = 2.0f;
+    private static final float BONUS = 2.0f;
 
     private CountDownTimer timer;
 
     public DoubleCoinsShopItem() {
         super("DoubleCoins", "Receive double coins in next 5 minutes.", 10L);
 
-        this.timer = new CountDownTimer(FIVE_MINUTES, 1000) {
+        this.timer = new CountDownTimer(FIVE_MINUTES, MINUTE) {
 
             @Override
             public void onTick(long l) {} // do nothing
@@ -38,7 +38,7 @@ public class DoubleCoinsShopItem extends ShopItem {
     public void onClick(View view) {
         // TODO Toast
         Toast.makeText(getContext(), "DoubleCoins!", Toast.LENGTH_SHORT).show();
-        AppPreferences.setYabCoinsBonusMultiplier(bonus);
+        AppPreferences.setYabCoinsBonusMultiplier(BONUS);
         timer.start();
     }
 }

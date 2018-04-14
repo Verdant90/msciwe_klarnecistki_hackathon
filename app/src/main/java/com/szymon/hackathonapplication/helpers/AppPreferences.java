@@ -14,8 +14,12 @@ public class AppPreferences {
     private static final String PEAR_COUNT = "PEAR_COUNT";
     private static final String PLUM_COUNT = "PLUM_COUNT";
     private static final String EXPERIENCE_POINTS = "EXPERIENCE_POINTS";
-    public static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
-    public static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
+
+    private static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
+    private static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
+
+    private static final String EXPERIENCE_POINTS_BONUS_MULTIPLIER = "EXPERIENCE_POINTS_BONUS_MULTIPLIER";
+    private static final float INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER = 1.0f;
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -43,17 +47,35 @@ public class AppPreferences {
 
     // Experience Points
 
-    public void addExperiencePoints(final long experiencePoints) {
+    public static void addExperiencePoints(final long experiencePoints) {
         final long current = getExperiencePoints();
-        setExperiencePoints(current + experiencePoints);
+        final long experiencePointsWithBonus = (long) (experiencePoints * getExperienceBonusMultiplier());
+        setExperiencePoints(current + experiencePointsWithBonus);
     }
 
-    private void setExperiencePoints(final long experiencePoints) {
+    private static void setExperiencePoints(final long experiencePoints) {
         preferencesEdit.putLong(EXPERIENCE_POINTS, experiencePoints).apply();
     }
 
-    private long getExperiencePoints() {
+    private static long getExperiencePoints() {
         return preferences.getLong(EXPERIENCE_POINTS, 0);
+    }
+
+    public static void setExperienceBonusMultiplier(final float bonus) {
+        preferencesEdit
+                .putFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, bonus)
+                .apply();
+    }
+
+    public static void resetExperienceBonusMultiplier() {
+        preferencesEdit
+                .putFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER)
+                .apply();
+    }
+
+    public static float getExperienceBonusMultiplier() {
+        return preferences
+                .getFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER);
     }
 
     // Yab Coins
