@@ -127,9 +127,12 @@ public class MapActivity extends FragmentActivity implements
     @OnClick(R.id.btn_current_location)
     public void goToCurrentLocation() {
         final LatLng position = gpsMarker.getPosition();
+        final CameraPosition currentCameraPosition = mMap.getCameraPosition();
 
         final CameraPosition cameraPosition = CameraPosition.builder()
-                .zoom(MIN_ZOOM_PREFERENCE_3D_MODE)
+                .zoom(currentCameraPosition.zoom)
+                .tilt(currentCameraPosition.tilt)
+                .bearing(currentCameraPosition.bearing)
                 .target(position)
                 .build();
 
