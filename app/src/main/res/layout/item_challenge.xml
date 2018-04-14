@@ -2,10 +2,10 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
-    android:padding="5dp"
     android:layout_width="match_parent"
-    android:layout_height="90dp">
+    android:layout_height="90dp"
+    android:background="@color/white"
+    android:padding="5dp">
 
     <ImageView
         android:id="@+id/image_challenge_icon"
@@ -68,27 +68,27 @@
         android:id="@+id/text_reward"
         android:layout_width="wrap_content"
         android:layout_height="16dp"
-        android:textStyle="bold"
         android:text="REWARD: "
         android:textSize="11sp"
-        app:layout_constraintVertical_chainStyle="packed"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/image_jablcoin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/guideline_button_start"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <ImageView
         android:id="@+id/image_jablcoin"
         android:layout_width="20dp"
         android:layout_height="25dp"
-        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_marginTop="5dp"
         android:src="@drawable/yabcoin"
         app:layout_constraintBottom_toTopOf="@+id/button_start_challenge"
         app:layout_constraintEnd_toStartOf="@+id/text_challenge_reward"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@id/guideline_button_start"
-        app:layout_constraintTop_toBottomOf="@+id/text_reward"/>
+        app:layout_constraintTop_toBottomOf="@+id/text_reward" />
 
     <TextView
         android:id="@+id/text_challenge_reward"
@@ -108,10 +108,10 @@
         android:layout_width="90dp"
         android:layout_height="30dp"
         android:background="@color/green"
+        android:foreground="?selectableItemBackground"
         android:text="@string/start"
         android:textAllCaps="true"
         android:textColor="@color/white"
-        android:foreground="?selectableItemBackground"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/guideline_button_start"
