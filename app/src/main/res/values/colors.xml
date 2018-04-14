@@ -3,6 +3,7 @@
     <color name="colorPrimary">#009a98</color>
     <color name="colorPrimaryDark">#547375</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimaryLight">#9dfcfb</color>
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
@@ -10,4 +11,5 @@
 
     <color name="gpsFillColor">#5000FF00</color>
     <color name="gpsStrokeColor">#00FF00</color>
+    <color name="gold">#f9d659</color>
 </resources>

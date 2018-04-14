@@ -20,4 +20,13 @@ public class MapUtils {
 
         return loc1.distanceTo(loc2);
     }
+
+    public static float distanceBetween(Location location, LatLng latLng) {
+        Location temp = new Location(LocationManager.GPS_PROVIDER);
+
+        temp.setLatitude(latLng.latitude);
+        temp.setLongitude(latLng.longitude);
+
+        return location.distanceTo(temp);
+    }
 }

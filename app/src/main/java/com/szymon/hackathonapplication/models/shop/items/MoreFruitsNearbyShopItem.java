@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.szymon.hackathonapplication.HackatonApplication;
+import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.activities.MapActivity;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.models.FruitFactory;
@@ -19,8 +20,8 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
         super("More fruits nearby",
-                String.format("Show %d more fruits nearby.", FRUITS_COUNT),
-                ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class),
+                String.format("Spawn %d fruits nearby.", FRUITS_COUNT),
+                ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class), R.drawable.ic_more_apples,
                 callback);
     }
 

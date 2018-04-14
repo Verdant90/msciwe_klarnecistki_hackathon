@@ -51,7 +51,7 @@ public class FruitFactory {
         final int numberOfApples = calculateNumberOfFruits(Apple.class.getSimpleName(), northWestCorner, southEastCorner);
         final int numberOfPears = calculateNumberOfFruits(Pear.class.getSimpleName(), northWestCorner, southEastCorner);
         final int numberOfPlums = calculateNumberOfFruits(Plum.class.getSimpleName(), northWestCorner, southEastCorner);
-        final List<Fruit> result = new ArrayList<>();
+        final List<Fruit> result = new LinkedList<>();
 
         for (int i = 0; i < numberOfApples; ++i ) {
             result.add(new Apple(locationFactory.getRandomLocation(northWestCorner, southEastCorner)));
