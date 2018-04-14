@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppResources;
@@ -42,6 +44,10 @@ public class ChallengeActivity extends Activity {
         listView.setAdapter(challengeAdapter);
     }
 
+    public void abc(final float position) {
+        Toast.makeText(this, position + " !", Toast.LENGTH_LONG).show();
+
+    }
     public class ChallengeAdapter extends ArrayAdapter<Challenge> {
         private Activity activity;
         private List<Challenge> challengeList;
@@ -77,10 +83,11 @@ public class ChallengeActivity extends Activity {
             public TextView title;
             public TextView reward;
             public ImageView icon;
+            public Button startChallengeButton;
 
         }
 
-        public View getView(int position, View convertView, ViewGroup parent) {
+        public View getView(final int position, final View convertView, ViewGroup parent) {
             View vi = convertView;
             final ViewHolder holder;
             try {
@@ -102,7 +109,12 @@ public class ChallengeActivity extends Activity {
                 holder.title.setText(challengeList.get(position).title);
                 holder.reward.setText(challengeList.get(position).pointsReward.toString());
                 holder.icon.setImageDrawable(challengeList.get(position).icon);
-
+                convertView.findViewById(R.id.button_start_challenge).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        abc(getItemId(position));
+                    }
+                });
             } catch (Exception e) {
 
 
