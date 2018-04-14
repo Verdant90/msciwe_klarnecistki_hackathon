@@ -19,6 +19,9 @@ import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback, MapMVP.View {
 
     private GoogleMap mMap;
@@ -28,13 +31,13 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        ButterKnife.bind(this);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
     }
-
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
@@ -63,6 +66,12 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback,
             fruitMarker.setIcon(Fruit.getMarkerIconFromDrawable(getDrawable(fruit.iconResId)));
         }
     }
+
+    @OnClick(R.id.button_shop)
+    public void goToShopButton() {
+        startActivity(new Intent(MapActivity.this, ShopActivity.class));
+    }
+
 
     private void addFruitToMap(final Fruit fruit) {
         final Marker fruitMarker = mMap.addMarker(new MarkerOptions()
