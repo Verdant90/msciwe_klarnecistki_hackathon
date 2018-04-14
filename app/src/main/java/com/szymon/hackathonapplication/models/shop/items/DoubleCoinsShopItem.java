@@ -12,7 +12,7 @@ import static com.szymon.hackathonapplication.HackatonApplication.getContext;
 
 public class DoubleCoinsShopItem extends ShopItem {
 
-    private static final int MINUTE = 1000;
+    private static final int MINUTE = 1000; // TODO now is second for tests
     private static final int FIVE_MINUTES = MINUTE * 5;
     private static final float BONUS = 2.0f;
 
@@ -33,17 +33,24 @@ public class DoubleCoinsShopItem extends ShopItem {
             public void onFinish() {
                 AppPreferences.resetYabCoinsBonusMultiplier();
                 // TODO Toast
-                Toast.makeText(getContext(), "DoubleCoins bonus finished!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getTitle() + " bonus finished!", Toast.LENGTH_SHORT).show();
             }
         };
     }
 
     @Override
+    public boolean isAvailable() {
+        return AppPreferences.getYabCoins() >= getCost() &&
+                !AppPreferences.isYabCoinsBonusMultiplierActive();
+    }
+
+    @Override
     public void onClick(View view) {
-        // TODO Toast
-        Toast.makeText(getContext(), "DoubleCoins!", Toast.LENGTH_SHORT).show();
         AppPreferences.setYabCoinsBonusMultiplier(BONUS);
         timer.start();
+
+        // TODO Toast
+        Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
 
         this.callback.onShopItemPurchased();
     }

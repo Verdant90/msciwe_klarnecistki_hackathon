@@ -32,17 +32,24 @@ public class DoubleExperienceShopItem extends ShopItem {
             public void onFinish() {
                 AppPreferences.resetExperienceBonusMultiplier();
                 // TODO Toast
-                Toast.makeText(getContext(), "DoubleExperience bonus finished!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), getTitle() + " bonus finished!", Toast.LENGTH_SHORT).show();
             }
         };
     }
 
     @Override
-    public void onClick(View view) {
-        // TODO Toast
-        Toast.makeText(getContext(), "DoubleExperience!", Toast.LENGTH_SHORT).show();
+    public boolean isAvailable() {
+        return AppPreferences.getYabCoins() >= getCost() &&
+                !AppPreferences.isExperienceBonusMultiplierActive();
+    }
+
+    @Override
+    public void onClick(final View view) {
         AppPreferences.setExperienceBonusMultiplier(BONUS);
         timer.start();
+
+        // TODO Toast
+        Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
 
         this.callback.onShopItemPurchased();
     }

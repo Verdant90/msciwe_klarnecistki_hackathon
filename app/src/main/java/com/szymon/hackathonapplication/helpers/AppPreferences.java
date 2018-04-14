@@ -87,6 +87,10 @@ public class AppPreferences {
                 .apply();
     }
 
+    public static boolean isExperienceBonusMultiplierActive() {
+        return getExperienceBonusMultiplier() != INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER;
+    }
+
     public static float getExperienceBonusMultiplier() {
         return preferences
                 .getFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER);
@@ -134,6 +138,10 @@ public class AppPreferences {
         preferencesEdit
                 .putFloat(YAB_COINS_BONUS_MULTIPLIER, INITIAL_YAB_COINS_BONUS_MULTIPLIER)
                 .apply();
+    }
+
+    public static boolean isYabCoinsBonusMultiplierActive() {
+        return getYabCoinsBonusMultiplier() != INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER;
     }
 
     public static float getYabCoinsBonusMultiplier() {

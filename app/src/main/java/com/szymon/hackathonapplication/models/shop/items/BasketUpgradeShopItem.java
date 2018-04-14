@@ -8,6 +8,8 @@ import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
 public class BasketUpgradeShopItem extends ShopItem {
 
+    private static final int MAX_BASKET_VERSION = 5;
+
     public BasketUpgradeShopItem(final Callback callback) {
         super("BasketUpgrade",
                 "Upgrade basket too nicer version.",
@@ -16,7 +18,13 @@ public class BasketUpgradeShopItem extends ShopItem {
     }
 
     @Override
-    public void onClick(View view) {
+    public boolean isAvailable() {
+        return AppPreferences.getYabCoins() >= getCost() &&
+                AppPreferences.getBasketVersion() < MAX_BASKET_VERSION;
+    }
+
+    @Override
+    public void onClick(final View view) {
         AppPreferences.increaseBasketVersion();
         this.callback.onShopItemPurchased();
     }

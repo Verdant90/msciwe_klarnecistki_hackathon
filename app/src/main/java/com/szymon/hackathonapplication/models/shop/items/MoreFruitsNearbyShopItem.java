@@ -7,13 +7,14 @@ import android.widget.Toast;
 import com.google.android.gms.maps.model.LatLng;
 import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.activities.MapActivity;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.models.FruitFactory;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
 public class MoreFruitsNearbyShopItem extends ShopItem {
 
-    private static final int FRUITS_COUNT = 100;
+    private static final int FRUITS_COUNT = 10;
     private static final double NEARBY_RANGE_IN_DEGREES = 0.005;
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
@@ -21,6 +22,11 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
                 String.format("Show %d more fruits nearby.", FRUITS_COUNT),
                 ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class),
                 callback);
+    }
+
+    @Override
+    public boolean isAvailable() {
+        return AppPreferences.getYabCoins() >= getCost();
     }
 
     @Override
