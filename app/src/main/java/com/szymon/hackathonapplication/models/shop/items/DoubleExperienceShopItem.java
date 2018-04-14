@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
+import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
 import static com.szymon.hackathonapplication.HackatonApplication.getContext;
 
@@ -18,7 +19,10 @@ public class DoubleExperienceShopItem extends ShopItem {
     private CountDownTimer timer;
 
     public DoubleExperienceShopItem(final Callback callback) {
-        super("DoubleExperience", "Receive double experience in next 5 minutes.", 20L, callback);
+        super("DoubleExperience",
+                "Receive double experience in next 5 minutes.",
+                ShopItemPriceMapper.toPrice(DoubleExperienceShopItem.class),
+                callback);
         this.timer = new CountDownTimer(FIVE_MINUTES, MINUTE) {
 
             @Override

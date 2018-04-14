@@ -9,6 +9,7 @@ import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.activities.MapActivity;
 import com.szymon.hackathonapplication.models.FruitFactory;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
+import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
 public class MoreFruitsNearbyShopItem extends ShopItem {
 
@@ -16,7 +17,10 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
     private static final double NEARBY_RANGE_IN_DEGREES = 0.005;
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
-        super("More fruits nearby", String.format("Show %d more fruits nearby.", FRUITS_COUNT), 35L, callback);
+        super("More fruits nearby",
+                String.format("Show %d more fruits nearby.", FRUITS_COUNT),
+                ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class),
+                callback);
     }
 
     @Override
