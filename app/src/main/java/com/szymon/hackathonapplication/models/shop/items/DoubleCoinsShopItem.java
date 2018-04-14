@@ -4,6 +4,7 @@ import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Toast;
 
+import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
@@ -19,9 +20,9 @@ public class DoubleCoinsShopItem extends ShopItem {
     private CountDownTimer timer;
 
     public DoubleCoinsShopItem(final Callback callback) {
-        super("DoubleCoins",
-                "Receive double coins in next 5 minutes.",
-                ShopItemPriceMapper.toPrice(DoubleCoinsShopItem.class),
+        super("Money Maker",
+                "Receive double coins \nin the next 5 minutes.",
+                ShopItemPriceMapper.toPrice(DoubleCoinsShopItem.class), R.drawable.ic_double_yabcoins,
                 callback);
 
         this.timer = new CountDownTimer(FIVE_MINUTES, MINUTE) {

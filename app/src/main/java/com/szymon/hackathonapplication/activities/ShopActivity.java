@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.szymon.hackathonapplication.HackatonApplication;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.models.FruitFactory;
+import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.shop.items.BasketUpgradeShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleCoinsShopItem;
 import com.szymon.hackathonapplication.models.shop.items.DoubleExperienceShopItem;
@@ -33,7 +35,7 @@ import butterknife.ButterKnife;
 public class ShopActivity extends Activity implements ShopItem.Callback {
 
     @BindView(R.id.list_shop_items)
-    ListView shopItemsListView;
+    GridView shopItemsListView;
 
     @Override
     protected void onCreate(@Nullable final Bundle savedInstanceState) {
@@ -124,6 +126,7 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
             holder.description.setText(shopItem.getDescription());
             holder.cost.setText(shopItem.getCost().toString());
             holder.purchaseButton.setOnClickListener(shopItem);
+            holder.icon.setImageDrawable(shopItem.getShopItemIcon());
         }
     }
 
