@@ -42,8 +42,6 @@ public class ShopActivity extends Activity implements ShopItem.Callback {
         setUpShopItemsAdapter();
     }
 
-
-
     private void setUpShopItemsAdapter() {
         // TODO TCI extract to DAO
         final List<ShopItem> shopItems = new ArrayList<>();

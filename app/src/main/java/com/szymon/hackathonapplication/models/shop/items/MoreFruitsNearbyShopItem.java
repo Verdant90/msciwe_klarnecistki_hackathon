@@ -29,13 +29,11 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
             return;
         }
 
-        double lat = location.latitude;
-        double lng = location.longitude;
+        final double lat = location.latitude;
+        final double lng = location.longitude;
 
-        final LatLng northWest = toNorthWest(lat, lng);
-        final LatLng southEast = toSouthEast(lat, lng);
         MapActivity.addFruitsToMap(FruitFactory.getInstance()
-                .getFruits(northWest, southEast, FRUITS_COUNT));
+                .getFruits(toNorthWest(lat, lng), toSouthEast(lat, lng), FRUITS_COUNT));
 
         callback.onShopItemPurchased();
     }
@@ -49,7 +47,5 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
     private LatLng toSouthEast(double lat, double lng) {
         return new LatLng(lat + NEARBY_RANGE_IN_DEGREES, lng + NEARBY_RANGE_IN_DEGREES);
     }
-
-
 
 }

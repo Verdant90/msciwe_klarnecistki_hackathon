@@ -16,6 +16,7 @@ import static com.szymon.hackathonapplication.helpers.MapUtils.distanceBetween;
 public class FruitFactory {
 
     private static final FruitFactory fruitFactory = new FruitFactory();
+
     private static final Random random = new Random(System.currentTimeMillis());
 
     private static final int APPROX_NUMBER_OF_APPLES_PER_10_KM  = 20;
@@ -24,7 +25,7 @@ public class FruitFactory {
 
     private LocationFactory locationFactory;
 
-    private FruitFactory() {
+    private FruitFactory() { // singleton
         this.locationFactory = new LocationFactory();
     }
 
