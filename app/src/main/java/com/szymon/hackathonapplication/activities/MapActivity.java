@@ -89,6 +89,7 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onLevelChanged() {
         setLevelTextView();
+        Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.btn_map_mode)
