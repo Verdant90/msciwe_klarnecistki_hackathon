@@ -6,8 +6,14 @@ import android.os.Parcelable;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.models.fruits.FruitType;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public abstract class Challenge implements Parcelable {
+    public Set<FruitType> fruitTypes= new HashSet<>();
     public String title;
     public String description;
     public int timeInMinutes;
