@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,10 +33,11 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
-import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
@@ -48,6 +50,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mbanje.kurt.fabbutton.FabButton;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -88,13 +92,33 @@ public class MapActivity extends FragmentActivity implements
     FabButton challengesButton;
     @BindView(R.id.button_shop)
     ImageView shopButton;
+    @BindView(R.id.konfettiView)
+    KonfettiView konfettiView;
     private int challengeCount = 0;
     private boolean challengeMode;
 
     @Override
     public void onLevelChanged() {
         setLevelTextView();
-        Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
+        releaseKonfetti();
+        ToastUtils.makeNiceToast(this,
+                AppResources.getColor(R.color.colorPrimary),
+                "Congratulations! You advanced to a new level!",
+                Color.WHITE,
+                getDrawable(R.drawable.ic_trophy));
+    }
+
+    private void releaseKonfetti() {
+        konfettiView.build()
+                .addColors(Color.WHITE, AppResources.getColor(R.color.colorAccent), AppResources.getColor(R.color.colorPrimary))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(1000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new nl.dionsegijn.konfetti.models.Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .stream(300, 5000L);
     }
 
     @OnClick(R.id.btn_map_mode)
@@ -342,6 +366,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     public void startChallengeMode(final Challenge challenge) {
+        ToastUtils.makeNiceToast(this, Color.WHITE, challenge.description, AppResources.getColor(R.color.colorPrimary), challenge.getFruitIcon());
         challengeMode = true;
         currentChallenge = challenge;
         challengesButton.setClickable(false);
@@ -367,13 +392,11 @@ public class MapActivity extends FragmentActivity implements
         challengeLayout.setVisibility(GONE);
         challengeCount = 0;
         if (success) {
-            //TODO!!!
-            //showSuccessMessage();
+            releaseKonfetti();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "Congrats! Challenge complete!", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_tick));
             currentChallenge.applyRewardEffect();
-            Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
         } else {
-            //showFailureMessage();
-            Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "You ran out of time! Challenge failed.", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_error));
         }
         currentChallenge = null;
     }
@@ -413,7 +436,7 @@ public class MapActivity extends FragmentActivity implements
                 AppPreferences.unlockApplication();
             } else {
                 Log.i(this.getClass().getName(), "tooo fast");
-                Toast.makeText(this, "You are mooving too fast! Slow Down", Toast.LENGTH_LONG).show();
+                ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.lightRed), "You are moving too fast!", AppResources.getColor(R.color.black), getDrawable(R.drawable.ic_error));
                 AppPreferences.blockApplication();
             }
         }

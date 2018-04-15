@@ -42,6 +42,7 @@
             android:id="@+id/map_gradient"
             android:layout_width="match_parent"
             android:layout_height="20dp"
+            android:visibility="invisible"
             android:background="@drawable/gradient_map" />
     </RelativeLayout>
 
@@ -138,21 +139,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintVertical_bias="0.95" />
 
-    <mbanje.kurt.fabbutton.FabButton
-        android:id="@+id/TMP_increment_pears"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:color="@android:color/white"
-        android:indeterminate="true"
-        android:src="@drawable/ic_fab_complete"
-        app:fbb_endBitmap="@drawable/ic_fab_complete"
-        app:fbb_progressColor="@android:color/white"
-        app:fbb_progressWidthRatio="0.1"
-        app:fbb_showEndBitmap="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <LinearLayout
         android:id="@+id/layout_challenge_panel"
         android:layout_width="100dp"
@@ -208,5 +194,10 @@
             android:textStyle="bold"
             tools:text="4:45" />
     </LinearLayout>
+    <nl.dionsegijn.konfetti.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </android.support.constraint.ConstraintLayout>
 
