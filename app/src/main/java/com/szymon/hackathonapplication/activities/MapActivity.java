@@ -28,6 +28,8 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
@@ -39,6 +41,7 @@ import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,6 +58,7 @@ public class MapActivity extends FragmentActivity implements
 
     private static GoogleMap mMap;
     private static LatLng location;
+    private Polygon blurredArea;
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
@@ -228,6 +232,7 @@ public class MapActivity extends FragmentActivity implements
         presenter.loadFruits();
 
         createGpsMarker(gdanskLatLng);
+        createBlurredArea();
         createLocationUpdates();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -239,6 +244,19 @@ public class MapActivity extends FragmentActivity implements
 
     private void createGpsMarker(final LatLng latLng) {
         this.gpsMarker = new GpsMarker(mMap, latLng);
+    }
+
+    private void createBlurredArea() {
+        final List<LatLng> blurredAreaPoints = new ArrayList<>();
+        blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
+        blurredAreaPoints.add(new LatLng(54.413736, 18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641,18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641, 18.572683));
+        blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
+
+        this.blurredArea = mMap.addPolygon(new PolygonOptions()
+                .addAll(blurredAreaPoints)
+                .fillColor(0x7F_FF_FF_FF));
     }
 
     private void createLocationUpdates() {
