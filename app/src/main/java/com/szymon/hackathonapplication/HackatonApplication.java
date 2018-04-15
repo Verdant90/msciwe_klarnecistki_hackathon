@@ -25,6 +25,7 @@ public class HackatonApplication extends Application {
         AppPreferences.getInstance();
         FruitsDao.getInstance();
         AppPreferences.addYabCoins(100L); // TODO only for tests
+        AppPreferences.setExperiencePoints(0);
 
     }
 

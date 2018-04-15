@@ -273,12 +273,12 @@ public class MapActivity extends FragmentActivity implements
         createGpsMarker(gdanskLatLng);
         createBlurredArea();
         createLocationUpdates();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(final LatLng latLng) {
-                refreshExploredArea(latLng);
-            }
-        });
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(final LatLng latLng) {
+//                refreshExploredArea(latLng);
+//            }
+//        });
     }
 
     private void createGpsMarker(final LatLng latLng) {
@@ -306,13 +306,13 @@ public class MapActivity extends FragmentActivity implements
             requestFineLocationPermission(this);
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
-            @Override
-            public void onGpsStatusChanged(int i) {
-                Log.i("TCI", "onGpsStatusChanged: " + i);
-            }
-        });
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+//        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
+//            @Override
+//            public void onGpsStatusChanged(int i) {
+//                Log.i("TCI", "onGpsStatusChanged: " + i);
+//            }
+//        });
     }
 
     private LocationManager getLocationManagerService() {
@@ -341,7 +341,7 @@ public class MapActivity extends FragmentActivity implements
     private int fruitsEatenForCullentChallenge(final List<Fruit> fruitsEaten) {
         int counter = 0;
         for (final Fruit fruit : fruitsEaten) {
-            if (currentChallenge.fruitTypes.contains(fruit.getType())) {
+            if (currentChallenge.getFruitTypes().contains(fruit.getType())) {
                 counter++;
             }
         }
@@ -427,7 +427,7 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(final Location location) {
-        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
+//        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         checkDistance(location, System.currentTimeMillis());
         previousLocation = location;
@@ -448,7 +448,9 @@ public class MapActivity extends FragmentActivity implements
         refreshExploredArea(currentLocation);
 
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
-        updateCurrentChallenge(fruitsRemoved);
+        if(!fruitsRemoved.isEmpty()) {
+            updateCurrentChallenge(fruitsRemoved);
+        }
     }
 
     private void refreshExploredArea(final LatLng newLocation) {
@@ -524,7 +526,7 @@ public class MapActivity extends FragmentActivity implements
         }
     }
 
-    final static double MAX_HUMAN_SPEED = 100f / 9.56f;
+    final static double MAX_HUMAN_SPEED = 100f / 1f;
 
     private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
         float distance = currentLocation.distanceTo(previousLocation);

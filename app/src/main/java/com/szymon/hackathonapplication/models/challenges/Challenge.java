@@ -8,14 +8,18 @@ import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.szymon.hackathonapplication.helpers.AppResources;
 import com.szymon.hackathonapplication.models.fruits.FruitType;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+
 public abstract class Challenge implements Parcelable {
 
     public abstract void applyRewardEffect();
-    public Set<FruitType> fruitTypes= new HashSet<>();
+    @Getter
+    private final List<FruitType> fruitTypes;
     public String title;
     public String description;
     public int timeInMinutes;
@@ -27,8 +31,8 @@ public abstract class Challenge implements Parcelable {
         return AppResources.getDrawable(iconId);
     }
 
-    public Challenge() {
-
+    public Challenge(List<FruitType> fruitTypes) {
+        this.fruitTypes = fruitTypes;
     }
 
     public Challenge(final Parcel in) {
@@ -38,6 +42,13 @@ public abstract class Challenge implements Parcelable {
         title = in.readString();
         howManyToCollect = in.readInt();
         iconId = in.readInt();
+        int fruitSize = in.readInt();
+        String[] strings = new String[fruitSize] ;
+        in.readStringArray(strings);
+        fruitTypes = new ArrayList<>();
+        for (int i = 0; i < fruitSize; i++) {
+            fruitTypes.add(FruitType.valueOf(strings[i]));
+        }
 
     }
 
@@ -49,6 +60,12 @@ public abstract class Challenge implements Parcelable {
         dest.writeString(title);
         dest.writeInt(howManyToCollect);
         dest.writeInt(iconId);
+        dest.writeInt(fruitTypes.size());
+        String[] strings = new String[fruitTypes.size()];
+        for (int i = 0; i < fruitTypes.size(); i++) {
+            strings[i] =fruitTypes.get(i).toString();
+        }
+        dest.writeStringArray(strings);
     }
 
     @Override
