@@ -3,20 +3,12 @@ package com.szymon.hackathonapplication.models.challenges;
 import android.os.Parcel;
 
 import com.szymon.hackathonapplication.R;
-import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.AppResources;
-import com.szymon.hackathonapplication.models.fruits.FruitType;
 
 public class PearTimeChallenge extends Challenge {
 
-    @Override
-    public void applyRewardEffect() {
-        AppPreferences.increasePearChallengeCount();
-        AppPreferences.addYabCoins(pointsReward);
-    }
-
     public PearTimeChallenge() {
-        fruitTypes.add(FruitType.PEAR);
+
         timeInMinutes = 5;
         pointsReward = 40;
         description = "Collect 10 pears within 5 minutes.";
