@@ -89,7 +89,7 @@ public class AppPreferences {
         preferencesEdit.putLong(EXPERIENCE_POINTS, experiencePoints).apply();
         final int levelAfter = getLevel();
 
-        if (levelBefore != levelAfter) {
+        if (levelBefore < levelAfter) {
             callback.onLevelChanged();
         }
     }
