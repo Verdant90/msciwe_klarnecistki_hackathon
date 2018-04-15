@@ -108,6 +108,9 @@ public class MapActivity extends FragmentActivity implements
     ImageView shopButton;
     @BindView(R.id.konfettiView)
     KonfettiView konfettiView;
+    @BindView(R.id.text_current_money)
+    TextView currentMoneyTextView;
+
     private int challengeCount = 0;
     private boolean challengeMode;
 
@@ -121,6 +124,11 @@ public class MapActivity extends FragmentActivity implements
                 "Congratulations! You advanced to level " + level +"!",
                 Color.WHITE,
                 getDrawable(R.drawable.ic_trophy));
+    }
+
+    @Override
+    public void onMoneyChanged() {
+        currentMoneyTextView.setText(Long.toString(AppPreferences.getYabCoins()));
     }
 
     private void releaseKonfetti() {
@@ -217,7 +225,7 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
-
+        currentMoneyTextView.setText(Long.toString(AppPreferences.getYabCoins()));
         setShopButtonIcon();
         setLevelTextView();
     }
