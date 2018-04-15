@@ -13,6 +13,7 @@ public class AppleTimeChallenge extends Challenge {
     @Override
     public void applyRewardEffect() {
         AppPreferences.increaseAppleChallengeCount();
+        AppPreferences.addYabCoins(pointsReward);
     }
 
     public AppleTimeChallenge() {

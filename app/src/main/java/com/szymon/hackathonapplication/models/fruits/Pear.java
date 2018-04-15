@@ -3,6 +3,7 @@ package com.szymon.hackathonapplication.models.fruits;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
 
 public class Pear extends Fruit {
 
@@ -16,6 +17,6 @@ public class Pear extends Fruit {
 
     @Override
     public void applyRewardEffect() {
-
+        AppPreferences.eatPear();
     }
 }
