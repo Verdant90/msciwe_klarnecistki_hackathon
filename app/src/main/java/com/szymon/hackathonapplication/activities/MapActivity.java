@@ -366,6 +366,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     public void startChallengeMode(final Challenge challenge) {
+        ToastUtils.makeNiceToast(this, Color.WHITE, challenge.description, AppResources.getColor(R.color.colorPrimary), challenge.getFruitIcon());
         challengeMode = true;
         currentChallenge = challenge;
         challengesButton.setClickable(false);
@@ -435,7 +436,7 @@ public class MapActivity extends FragmentActivity implements
                 AppPreferences.unlockApplication();
             } else {
                 Log.i(this.getClass().getName(), "tooo fast");
-                Toast.makeText(this, "You are mooving too fast! Slow Down", Toast.LENGTH_LONG).show();
+                ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.lightRed), "You are moving too fast!", AppResources.getColor(R.color.black), getDrawable(R.drawable.ic_error));
                 AppPreferences.blockApplication();
             }
         }
