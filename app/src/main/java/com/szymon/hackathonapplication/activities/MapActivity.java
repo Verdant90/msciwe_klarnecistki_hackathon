@@ -27,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
@@ -38,6 +39,7 @@ import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -220,6 +222,7 @@ public class MapActivity extends FragmentActivity implements
         presenter.loadFruits();
 
         createGpsMarker(gdanskLatLng);
+        createBlurredArea();
         createLocationUpdates();
         startChallengeMode(new PearTimeChallenge());
 
@@ -233,6 +236,19 @@ public class MapActivity extends FragmentActivity implements
 
     private void createGpsMarker(final LatLng latLng) {
         this.gpsMarker = new GpsMarker(mMap, latLng);
+    }
+
+    private void createBlurredArea() {
+        final List<LatLng> blurredArea = new ArrayList<>();
+        blurredArea.add(new LatLng(54.413736, 18.572683));
+        blurredArea.add(new LatLng(54.413736, 18.7800167));
+        blurredArea.add(new LatLng(54.3209641,18.7800167));
+        blurredArea.add(new LatLng(54.3209641, 18.572683));
+        blurredArea.add(new LatLng(54.413736, 18.572683));
+
+        mMap.addPolygon(new PolygonOptions()
+                .addAll(blurredArea)
+                .fillColor(0x7F_FF_FF_FF));
     }
 
     private void createLocationUpdates() {
