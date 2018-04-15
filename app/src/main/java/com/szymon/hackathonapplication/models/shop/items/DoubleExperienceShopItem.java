@@ -6,6 +6,8 @@ import android.widget.Toast;
 
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
@@ -33,7 +35,9 @@ public class DoubleExperienceShopItem extends ShopItem {
             public void onFinish() {
                 AppPreferences.resetExperienceBonusMultiplier();
                 // TODO Toast
-                Toast.makeText(getContext(), getTitle() + " bonus finished!", Toast.LENGTH_SHORT).show();
+                ToastUtils.makeNiceToast(getContext(), AppResources.getColor(R.color.white), getTitle() + " bonus \nfinished!", AppResources.getColor(R.color.colorPrimary), getShopItemIcon());
+
+                //Toast.makeText(getContext(), getTitle() + " bonus finished!", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -51,7 +55,9 @@ public class DoubleExperienceShopItem extends ShopItem {
         timer.start();
 
         // TODO Toast
-        Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
+        ToastUtils.makeNiceToast(getContext(), AppResources.getColor(R.color.white), getTitle() + " bonus is active!", AppResources.getColor(R.color.colorPrimary), getShopItemIcon());
+
+        //Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
 
         this.callback.onShopItemPurchased();
     }
