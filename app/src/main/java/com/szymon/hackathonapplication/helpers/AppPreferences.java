@@ -306,7 +306,7 @@ public class AppPreferences {
         return preferences.getBoolean(APPLICATION_BLOCKED, false);
     }
 
-    private static void setAreaDiscovered(final double area) {
+    public static void setAreaDiscovered(final double area) {
         preferencesEdit.putString(AREA_DISCOVERED, Double.toString(area)).apply();
     }
 
@@ -314,8 +314,4 @@ public class AppPreferences {
         return Double.valueOf(preferences.getString(AREA_DISCOVERED, "0"));
     }
 
-    public static void addAreaDiscovered(final double area) {
-        double current = getAreaDiscovered();
-        setAreaDiscovered(current + area);
-    }
 }

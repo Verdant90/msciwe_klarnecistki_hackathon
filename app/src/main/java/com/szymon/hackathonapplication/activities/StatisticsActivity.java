@@ -61,7 +61,7 @@ public class StatisticsActivity extends Activity {
         pearChallengesTextView.setText(String.valueOf(AppPreferences.getPearChallengeCount()));
         plumChallengesTextView.setText(String.valueOf(AppPreferences.getPlumChallengeCount()));
         fruitChallengesTextView.setText(String.valueOf(AppPreferences.getFruitChallengeCount()));
-        distanceTextView.setText(String.valueOf(AppPreferences.getTotalDistance()));
-        areaTextView.setText(String.valueOf(AppPreferences.getAreaDiscovered()));
+        distanceTextView.setText(String.format("%.3f", AppPreferences.getTotalDistance()));
+        areaTextView.setText(String.format("%.3f", AppPreferences.getAreaDiscovered()));
     }
 }

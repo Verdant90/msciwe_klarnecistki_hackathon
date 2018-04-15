@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.esri.core.geometry.AngularUnit;
+import com.esri.core.geometry.AreaUnit;
 import com.esri.core.geometry.GeometryEngine;
 import com.esri.core.geometry.MultiPoint;
 import com.esri.core.geometry.Point;
@@ -63,6 +64,8 @@ import nl.dionsegijn.konfetti.models.Shape;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.esri.core.geometry.AreaUnit.Code.SQUARE_KILOMETER;
+import static com.esri.core.geometry.GeometryEngine.geodesicArea;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
@@ -458,6 +461,9 @@ public class MapActivity extends FragmentActivity implements
             final Point point = polygon.getPoint(i);
             hole.add(new LatLng(point.getX(), point.getY()));
         }
+
+        double area = geodesicArea(polygon, spatialReference, (AreaUnit) Unit.create(SQUARE_KILOMETER));
+        AppPreferences.setAreaDiscovered(area);
 
         this.blurredArea.setHoles(Arrays.asList(hole));
     }
