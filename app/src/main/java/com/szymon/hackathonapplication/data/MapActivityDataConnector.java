@@ -59,7 +59,18 @@ public class MapActivityDataConnector implements MapMVP.Model {
                 new LatLng(54.371559, 18.630268),
                 new LatLng(54.368269, 18.632348),
                 new LatLng(54.367888, 18.632943),
-                new LatLng(54.367265, 18.633359)
+                new LatLng(54.367265, 18.633359),
+
+                new LatLng(54.370780, 18.629554),
+                new LatLng(54.370520, 18.628752),
+                new LatLng(54.370157, 18.629138),
+                new LatLng(54.370399, 18.630030),
+                new LatLng(54.370130, 18.629301),
+                new LatLng(54.369977, 18.630177),
+                new LatLng(54.369483, 18.630323),
+                new LatLng(54.369960, 18.630703),
+                new LatLng(54.370419, 18.631112),
+                new LatLng(54.370130, 18.631813)
         );
     }
 }
