@@ -47,6 +47,8 @@ public class AppPreferences {
 
     public interface Callback {
         void onLevelChanged();
+
+        void onMoneyChanged();
     }
 
     public static void setCallback(final Callback callback) {
@@ -135,12 +137,16 @@ public class AppPreferences {
         final long coinsWithBonus = (long) (coins * getYabCoinsBonusMultiplier());
         preferencesEdit.putLong(YAB_COINS, current + coinsWithBonus).apply();
         preferencesEdit.putLong(TOTAL_YAB_COINS, currentTotal + coinsWithBonus).apply();
+        if (callback != null)
+        callback.onMoneyChanged();
     }
 
     public static void spendYabCoins(final long coins) {
         final long current = getYabCoins();
         preferencesEdit.putLong(YAB_COINS, current - coins)
                 .apply();
+        if (callback != null)
+        callback.onMoneyChanged();
     }
 
     private static void setTotalYabCoins(final long coins) {
