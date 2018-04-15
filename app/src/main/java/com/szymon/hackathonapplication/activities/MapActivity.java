@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,46 +13,69 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
+import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
-import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
+import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mbanje.kurt.fabbutton.FabButton;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
-        LocationListener, OnMapReadyCallback, MapMVP.View {
+        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback {
 
     private static GoogleMap mMap;
     private static LatLng location;
+    private Polygon blurredArea;
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
+    private boolean mapModeNormal = true;
+    private static final float MIN_ZOOM_PREFERENCE = 12f;
+    private static final float MIN_ZOOM_PREFERENCE_3D_MODE = 16f;
 
+    @BindView(R.id.sky)
+    RelativeLayout skyLayout;
+    @BindView(R.id.map_gradient)
+    View mapGradientView;
+    @BindView(R.id.btn_map_mode)
+    FabButton toggleStylesButton;
     @BindView(R.id.text_challenge_timer)
     TextView challengeTimer;
     @BindView(R.id.layout_challenge_panel)
@@ -62,22 +86,110 @@ public class MapActivity extends FragmentActivity implements
     TextView challengeTitle;
     @BindView(R.id.text_challenge_current_score)
     TextView challengeCurrentProgressTextView;
+    @BindView(R.id.text_current_level)
+    TextView currentLevelTextView;
     @BindView(R.id.btn_challenges)
     FabButton challengesButton;
+    @BindView(R.id.button_shop)
+    ImageView shopButton;
+    @BindView(R.id.konfettiView)
+    KonfettiView konfettiView;
     private int challengeCount = 0;
     private boolean challengeMode;
 
-    @OnClick(R.id.TMP_increment_pears)
-    public void tmpincrementPears() {
-        updateCurrentChallenge(currentChallenge);
+    @Override
+    public void onLevelChanged() {
+        setLevelTextView();
+        releaseKonfetti();
+        final int level = AppPreferences.getLevel();
+        ToastUtils.makeNiceToast(this,
+                AppResources.getColor(R.color.colorPrimary),
+                "Congratulations! You advanced to level " + level +"!",
+                Color.WHITE,
+                getDrawable(R.drawable.ic_trophy));
+    }
+
+    private void releaseKonfetti() {
+        konfettiView.build()
+                .addColors(Color.WHITE, AppResources.getColor(R.color.colorAccent), AppResources.getColor(R.color.colorPrimary))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(1000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new nl.dionsegijn.konfetti.models.Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .stream(300, 5000L);
+    }
+
+    @OnClick(R.id.btn_map_mode)
+    public void switchMapMode() {
+        if (mapModeNormal) {
+            switchToMapMode3d();
+        } else {
+            switchToMapModeNormal();
+        }
+        mapModeNormal = !mapModeNormal;
+    }
+
+    private void switchToMapModeNormal() {
+        skyLayout.setVisibility(GONE);
+        mapGradientView.setVisibility(GONE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_3d, R.drawable.ic_map_3d);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .bearing(0)
+                .tilt(0)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+    }
+
+    private void switchToMapMode3d() {
+        skyLayout.setVisibility(VISIBLE);
+        mapGradientView.setVisibility(VISIBLE);
+        toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(mMap.getCameraPosition().target)
+                .zoom(mMap.getCameraPosition().zoom)
+                .tilt(67.5f)
+                .bearing(mMap.getCameraPosition().bearing)
+                .build();
+        mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE_3D_MODE);
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private GpsMarker gpsMarker;
 
+    @OnClick(R.id.btn_current_location)
+    public void goToCurrentLocation() {
+        final LatLng position = gpsMarker.getPosition();
+        if (position == null) return;
+        final CameraPosition currentCameraPosition = mMap.getCameraPosition();
+
+        final CameraPosition cameraPosition = CameraPosition.builder()
+                .zoom(currentCameraPosition.zoom)
+                .tilt(currentCameraPosition.tilt)
+                .bearing(currentCameraPosition.bearing)
+                .target(position)
+                .build();
+
+        final CameraUpdate cameraUpdate = CameraUpdateFactory.newCameraPosition(cameraPosition);
+
+        mMap.animateCamera(cameraUpdate);
+    }
+
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
-        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        final Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    @OnClick(R.id.btn_statistics)
+    public void goToStatisticsActivity() {
+        final Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -91,6 +203,15 @@ public class MapActivity extends FragmentActivity implements
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         presenter = new MapActivityPresenter(this);
+
+        setShopButtonIcon();
+        setLevelTextView();
+    }
+
+    private void setLevelTextView() {
+        AppPreferences.setCallback(this);
+        final int level = AppPreferences.getLevel();
+        this.currentLevelTextView.setText(Integer.toString(level));
     }
 
     @Override
@@ -108,6 +229,17 @@ public class MapActivity extends FragmentActivity implements
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        setShopButtonIcon();
+    }
+
+    private void setShopButtonIcon() {
+        final Integer basketVersion = AppPreferences.getBasketVersion();
+        shopButton.setImageResource(BasketVersionIconMapper.toDrawableIcon(basketVersion));
+    }
+
+    @Override
     public void onMapReady(final GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -120,15 +252,36 @@ public class MapActivity extends FragmentActivity implements
         mMap.getUiSettings().setRotateGesturesEnabled(false);
         mMap.getUiSettings().setCompassEnabled(false);
         mMap.getUiSettings().setMapToolbarEnabled(false);
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                this, R.raw.map_style));
         presenter.loadFruits();
 
         createGpsMarker(gdanskLatLng);
+        createBlurredArea();
         createLocationUpdates();
-        startChallengeMode(new PearTimeChallenge());
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                AppPreferences.addExperiencePoints(5);
+            }
+        });
     }
 
     private void createGpsMarker(final LatLng latLng) {
         this.gpsMarker = new GpsMarker(mMap, latLng);
+    }
+
+    private void createBlurredArea() {
+        final List<LatLng> blurredAreaPoints = new ArrayList<>();
+        blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
+        blurredAreaPoints.add(new LatLng(54.413736, 18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641,18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641, 18.572683));
+        blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
+
+        this.blurredArea = mMap.addPolygon(new PolygonOptions()
+                .addAll(blurredAreaPoints)
+                .fillColor(0x7F_FF_FF_FF));
     }
 
     private void createLocationUpdates() {
@@ -154,16 +307,25 @@ public class MapActivity extends FragmentActivity implements
         FruitsDao.addFruits(fruits);
     }
 
-    @Override
-    public void updateCurrentChallenge(final Challenge currentChallenge) {
+    public void updateCurrentChallenge(final List<Fruit> fruitsEaten) {
         if (challengeMode) {
-            challengeCount++;
+            challengeCount = challengeCount + fruitsEatenForCullentChallenge(fruitsEaten);
             if (challengeCount == currentChallenge.howManyToCollect) {
                 endChallengeMode(true);
             } else {
                 challengeCurrentProgressTextView.setText(challengeCount + "/" + currentChallenge.howManyToCollect);
             }
         }
+    }
+
+    private int fruitsEatenForCullentChallenge(final List<Fruit> fruitsEaten) {
+        int counter = 0;
+        for (final Fruit fruit : fruitsEaten) {
+            if (currentChallenge.fruitTypes.contains(fruit.getType())) {
+                counter++;
+            }
+        }
+        return counter;
     }
 
     @OnClick(R.id.button_shop)
@@ -205,6 +367,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     public void startChallengeMode(final Challenge challenge) {
+        ToastUtils.makeNiceToast(this, Color.WHITE, challenge.description, AppResources.getColor(R.color.colorPrimary), challenge.getFruitIcon());
         challengeMode = true;
         currentChallenge = challenge;
         challengesButton.setClickable(false);
@@ -223,7 +386,6 @@ public class MapActivity extends FragmentActivity implements
 
     public void endChallengeMode(boolean success) {
         challengeMode = false;
-        currentChallenge = null;
         challengesButton.setClickable(true);
         challengesButton.setEnabled(true);
         challengesButton.setAlpha(1f);
@@ -231,23 +393,67 @@ public class MapActivity extends FragmentActivity implements
         challengeLayout.setVisibility(GONE);
         challengeCount = 0;
         if (success) {
-            //TODO!!!
-            //showSuccessMessage();
-            //receiveReward();
-            Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
+            releaseKonfetti();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "Congrats! Challenge complete!", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_tick));
+            currentChallenge.applyRewardEffect();
         } else {
-            //showFailureMessage();
-            Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "You ran out of time! Challenge failed.", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_error));
         }
+        currentChallenge = null;
     }
+
+    private Location previousLocation;
+    private Long previousLocationTime;
 
     @Override
     public void onLocationChanged(final Location location) {
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        checkDistance(location, System.currentTimeMillis());
+        previousLocation = location;
+        previousLocationTime = System.currentTimeMillis();
+        if (AppPreferences.isApplicationBlocked()) {
+            gpsMarker.hideRange();
+            gpsMarker.changePosition(currentLocation);
+            return;
+        } else {
+            if (gpsMarker != null) {
+                gpsMarker.showRange();
+            }
+        }
+
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
-        FruitsDao.removeFruitsInRange(location);
+        final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
+        updateCurrentChallenge(fruitsRemoved);
+    }
+
+    private void checkDistance(final Location location, final long timeStamp) {
+        if (previousLocation != null && previousLocationTime != null) {
+            //TODO cheatSafety (time) speed check 100 m / 9.56
+            if (speedIsOk(location, previousLocation, timeStamp, previousLocationTime)) {
+                AppPreferences.increaseDistance(location.distanceTo(previousLocation));
+                Log.i(this.getClass().getName(), "ok");
+                AppPreferences.unlockApplication();
+            } else {
+                Log.i(this.getClass().getName(), "tooo fast");
+                ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.lightRed), "You are moving too fast!", AppResources.getColor(R.color.black), getDrawable(R.drawable.ic_error));
+                AppPreferences.blockApplication();
+            }
+        }
+    }
+
+    final static double MAX_HUMAN_SPEED = 100f / 9.56f;
+
+    private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
+        float distance = currentLocation.distanceTo(previousLocation);
+        double timeMilis = currentLocationTime - previousLocationTime;
+        double timeSec = timeMilis / 1000;
+        Log.i(" speed", "time : " + timeSec);
+        Log.i(" speed", "speed : " + distance / timeSec);
+        //Log.d("speed : ", Double.valueOf(currentSpeed).toString());
+        Double v = distance / timeSec;
+        return MAX_HUMAN_SPEED > v;
     }
 
     @Override

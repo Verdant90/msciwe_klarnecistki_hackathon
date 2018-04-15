@@ -12,6 +12,7 @@ import lombok.Getter;
 
 public abstract class Fruit {
 
+    public FruitType fruitType;
     @Getter
     public LatLng location;
     @Getter
@@ -44,5 +45,10 @@ public abstract class Fruit {
         }
         AppPreferences.addYabCoins(yabCoinsReward);
         AppPreferences.addExperiencePoints(experienceReward);
+        applyRewardEffect();
+    }
+
+    public FruitType getType(){
+        return fruitType;
     }
 }

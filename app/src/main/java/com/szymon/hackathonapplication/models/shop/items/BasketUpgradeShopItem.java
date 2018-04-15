@@ -14,19 +14,20 @@ public class BasketUpgradeShopItem extends ShopItem {
     public BasketUpgradeShopItem(final Callback callback) {
         super("Basket Case",
                 "Upgrade your basket \ntoo a nicer version :)",
-                ShopItemPriceMapper.toPrice(BasketUpgradeShopItem.class), R.drawable.ic_apple,
+                ShopItemPriceMapper.toPrice(BasketUpgradeShopItem.class), R.drawable.basket_plus,
                 callback);
     }
 
     @Override
     public boolean isAvailable() {
         return AppPreferences.getYabCoins() >= getCost() &&
-                AppPreferences.getBasketVersion() < MAX_BASKET_VERSION;
+                AppPreferences.getBasketVersion() < MAX_BASKET_VERSION - 1;
     }
 
     @Override
     public void onClick(final View view) {
         AppPreferences.increaseBasketVersion();
+        AppPreferences.spendYabCoins(getCost());
         this.callback.onShopItemPurchased();
     }
 
