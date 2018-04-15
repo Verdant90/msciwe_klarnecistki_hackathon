@@ -51,7 +51,7 @@ import static android.view.View.VISIBLE;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
-        LocationListener, OnMapReadyCallback, MapMVP.View {
+        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback {
 
     private static GoogleMap mMap;
     private static LatLng location;
@@ -78,12 +78,20 @@ public class MapActivity extends FragmentActivity implements
     TextView challengeTitle;
     @BindView(R.id.text_challenge_current_score)
     TextView challengeCurrentProgressTextView;
+    @BindView(R.id.text_current_level)
+    TextView currentLevelTextView;
     @BindView(R.id.btn_challenges)
     FabButton challengesButton;
     @BindView(R.id.button_shop)
     ImageView shopButton;
     private int challengeCount = 0;
     private boolean challengeMode;
+
+    @Override
+    public void onLevelChanged() {
+        setLevelTextView();
+        Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
+    }
 
     @OnClick(R.id.btn_map_mode)
     public void switchMapMode() {
@@ -129,9 +137,12 @@ public class MapActivity extends FragmentActivity implements
     public void goToCurrentLocation() {
         final LatLng position = gpsMarker.getPosition();
         if (position == null) return;
+        final CameraPosition currentCameraPosition = mMap.getCameraPosition();
 
         final CameraPosition cameraPosition = CameraPosition.builder()
-                .zoom(MIN_ZOOM_PREFERENCE_3D_MODE)
+                .zoom(currentCameraPosition.zoom)
+                .tilt(currentCameraPosition.tilt)
+                .bearing(currentCameraPosition.bearing)
                 .target(position)
                 .build();
 
@@ -142,8 +153,14 @@ public class MapActivity extends FragmentActivity implements
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
-        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        final Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    @OnClick(R.id.btn_statistics)
+    public void goToStatisticsActivity() {
+        final Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -159,6 +176,13 @@ public class MapActivity extends FragmentActivity implements
         presenter = new MapActivityPresenter(this);
 
         setShopButtonIcon();
+        setLevelTextView();
+    }
+
+    private void setLevelTextView() {
+        AppPreferences.setCallback(this);
+        final int level = AppPreferences.getLevel();
+        this.currentLevelTextView.setText(Integer.toString(level));
     }
 
     @Override
@@ -205,7 +229,12 @@ public class MapActivity extends FragmentActivity implements
 
         createGpsMarker(gdanskLatLng);
         createLocationUpdates();
-        startChallengeMode(new PearTimeChallenge());
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                AppPreferences.addExperiencePoints(5);
+            }
+        });
     }
 
     private void createGpsMarker(final LatLng latLng) {
