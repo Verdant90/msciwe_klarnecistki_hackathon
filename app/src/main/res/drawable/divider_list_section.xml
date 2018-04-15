@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<nine-patch android:alpha=".5" android:tint="@color/black" android:src="@drawable/list_section_divider_mtrl_alpha" xmlns:android="http://schemas.android.com/apk/res/android"/>

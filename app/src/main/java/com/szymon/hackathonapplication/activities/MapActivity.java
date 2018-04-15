@@ -151,8 +151,14 @@ public class MapActivity extends FragmentActivity implements
 
     @OnClick(R.id.btn_challenges)
     public void goToChallengeActivity() {
-        Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
+        final Intent intent = new Intent(MapActivity.this, ChallengeActivity.class);
         startActivityForResult(intent, 1);
+    }
+
+    @OnClick(R.id.btn_statistics)
+    public void goToStatisticsActivity() {
+        final Intent intent = new Intent(this, StatisticsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -221,8 +227,6 @@ public class MapActivity extends FragmentActivity implements
 
         createGpsMarker(gdanskLatLng);
         createLocationUpdates();
-        startChallengeMode(new PearTimeChallenge());
-
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
