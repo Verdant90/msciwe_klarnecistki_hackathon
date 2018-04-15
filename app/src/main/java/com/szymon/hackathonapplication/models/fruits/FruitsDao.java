@@ -29,16 +29,15 @@ public class FruitsDao {
         fruitsOnMap.addAll(fruits);
     }
 
-    public static List<Fruit> removeFruitsInRange(final Location location) {
-        final List<Fruit> fruitsToRemove = new LinkedList<>();
-        for (Fruit fruit: fruitsOnMap) {
+    public static void removeFruitsInRange(final Location location) {
+        final Iterator iterator = fruitsOnMap.iterator();
+        while (iterator.hasNext()) {
+            final Fruit fruit = (Fruit) iterator.next();
             final float distance = MapUtils.distanceBetween(location, fruit.getLocation());
             if (distance <= AppPreferences.getExplorationRange()) {
                 fruit.eatFruit();
-                fruitsToRemove.add(fruit);
+                iterator.remove();
             }
         }
-        fruitsOnMap.removeAll(fruitsToRemove);
-        return fruitsToRemove;
     }
 }

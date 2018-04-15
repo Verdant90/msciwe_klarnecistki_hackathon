@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,16 +42,18 @@ public class ChallengeActivity extends Activity {
     private void setupAdapter() {
         ChallengeAdapter challengeAdapter;
         List<Challenge> challengeList = ChallengeUtils.getChallenges();
-        challengeAdapter = new ChallengeAdapter(this, 0, challengeList);
+        challengeAdapter = new ChallengeAdapter (this, 0, challengeList);
         listView.setAdapter(challengeAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId) {
+            public void onItemClick(AdapterView<?> listView, View itemView, int itemPosition, long itemId)
+            {
                 Toast.makeText(ChallengeActivity.this, "Image Button clicked:" + itemPosition, Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     public void onChallengeClick(final Challenge challenge) {
+        Toast.makeText(this, challenge.title + " !", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
         returnIntent.putExtra("result", challenge);
         setResult(Activity.RESULT_OK, returnIntent);
@@ -64,7 +65,7 @@ public class ChallengeActivity extends Activity {
         private List<Challenge> challengeList;
         private LayoutInflater inflater = null;
 
-        public ChallengeAdapter(final Activity activity, final int textViewResourceId, final List<Challenge> challengeList) {
+        public ChallengeAdapter (Activity activity, int textViewResourceId, List<Challenge> challengeList) {
             super(activity, textViewResourceId, challengeList);
             try {
                 this.activity = activity;
@@ -72,8 +73,8 @@ public class ChallengeActivity extends Activity {
 
                 inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            } catch (final Exception e) {
-                Log.e(this.getClass().getName(), e.getMessage());
+            } catch (Exception e) {
+
             }
         }
 
@@ -85,11 +86,11 @@ public class ChallengeActivity extends Activity {
             return position;
         }
 
-        public long getItemId(final int position) {
+        public long getItemId(int position) {
             return position;
         }
 
-        public class ViewHolder {
+        public  class ViewHolder {
             public TextView description;
             public TextView title;
             public TextView reward;
@@ -97,7 +98,7 @@ public class ChallengeActivity extends Activity {
             public Button startChallengeButton;
         }
 
-        public View getView(final int position, final View convertView, final ViewGroup parent) {
+        public View getView(final int position, final View convertView, ViewGroup parent) {
             View vi = convertView;
             final ViewHolder holder;
             try {
@@ -106,9 +107,9 @@ public class ChallengeActivity extends Activity {
                     holder = new ViewHolder();
 
                     holder.description = vi.findViewById(R.id.text_challenge_description);
-                    holder.title = vi.findViewById(R.id.text_challenge_title);
+                    holder.title =  vi.findViewById(R.id.text_challenge_title);
                     holder.reward = vi.findViewById(R.id.text_challenge_reward);
-                    holder.icon = vi.findViewById(R.id.image_challenge_icon);
+                    holder.icon =  vi.findViewById(R.id.image_challenge_icon);
                     holder.startChallengeButton = vi.findViewById(R.id.button_start_challenge);
                     vi.setTag(holder);
                 } else {
@@ -125,8 +126,9 @@ public class ChallengeActivity extends Activity {
                         onChallengeClick(challengeList.get(position));
                     }
                 });
-            } catch (final Exception e) {
-                Log.e(this.getClass().getName(), e.getMessage());
+            } catch (Exception e) {
+
+
             }
             return vi;
         }

@@ -48,7 +48,6 @@ public class DoubleCoinsShopItem extends ShopItem {
     @Override
     public void onClick(View view) {
         AppPreferences.setYabCoinsBonusMultiplier(BONUS);
-        AppPreferences.spendYabCoins(getCost());
         timer.start();
 
         // TODO Toast

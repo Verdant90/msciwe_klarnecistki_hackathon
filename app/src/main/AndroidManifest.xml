@@ -40,7 +40,6 @@
         </activity>
 
         <activity android:name=".activities.ChallengeActivity" />
-        <activity android:name=".activities.StatisticsActivity" />
         <activity android:name=".activities.ShopActivity"
             android:screenOrientation="portrait"/>
     </application>

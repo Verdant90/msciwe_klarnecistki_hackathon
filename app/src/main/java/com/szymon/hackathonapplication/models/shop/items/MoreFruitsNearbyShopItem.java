@@ -19,7 +19,7 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
     private static final double NEARBY_RANGE_IN_DEGREES = 0.005;
 
     public MoreFruitsNearbyShopItem(final Callback callback) {
-        super("It's a kind of magic",
+        super("More fruits nearby",
                 String.format("Spawn %d fruits nearby.", FRUITS_COUNT),
                 ShopItemPriceMapper.toPrice(MoreFruitsNearbyShopItem.class), R.drawable.ic_more_apples,
                 callback);
@@ -46,7 +46,6 @@ public class MoreFruitsNearbyShopItem extends ShopItem {
         MapActivity.addFruitsToMap(FruitFactory.getInstance()
                 .getFruits(toNorthWest(lat, lng), toSouthEast(lat, lng), FRUITS_COUNT));
 
-        AppPreferences.spendYabCoins(getCost());
         callback.onShopItemPurchased();
     }
 
