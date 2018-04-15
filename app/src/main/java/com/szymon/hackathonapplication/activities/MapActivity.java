@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -26,6 +27,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esri.core.geometry.AngularUnit;
+import com.esri.core.geometry.AreaUnit;
+import com.esri.core.geometry.GeometryEngine;
+import com.esri.core.geometry.LinearUnit;
+import com.esri.core.geometry.MultiPoint;
+import com.esri.core.geometry.Point;
+import com.esri.core.geometry.SpatialReference;
+import com.esri.core.geometry.Unit;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +47,8 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
@@ -47,15 +58,21 @@ import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mbanje.kurt.fabbutton.FabButton;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.esri.core.geometry.AreaUnit.Code.SQUARE_KILOMETER;
+import static com.esri.core.geometry.GeometryEngine.geodesicArea;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
@@ -64,6 +81,7 @@ public class MapActivity extends FragmentActivity implements
     private static GoogleMap mMap;
     private static LatLng location;
     private Polygon blurredArea;
+    private List<LatLng> exploredPoints = new LinkedList<>();
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
@@ -93,6 +111,8 @@ public class MapActivity extends FragmentActivity implements
     FabButton challengesButton;
     @BindView(R.id.button_shop)
     ImageView shopButton;
+    @BindView(R.id.konfettiView)
+    KonfettiView konfettiView;
     private int challengeCount = 0;
     private boolean challengeMode;
     private SensorManager sensorManager;
@@ -103,7 +123,26 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onLevelChanged() {
         setLevelTextView();
-        Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
+        releaseKonfetti();
+        final int level = AppPreferences.getLevel();
+        ToastUtils.makeNiceToast(this,
+                AppResources.getColor(R.color.colorPrimary),
+                "Congratulations! You advanced to level " + level + "!",
+                Color.WHITE,
+                getDrawable(R.drawable.ic_trophy));
+    }
+
+    private void releaseKonfetti() {
+        konfettiView.build()
+                .addColors(Color.WHITE, AppResources.getColor(R.color.colorAccent), AppResources.getColor(R.color.colorPrimary))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(1000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new nl.dionsegijn.konfetti.models.Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .stream(300, 5000L);
     }
 
     @OnClick(R.id.btn_map_mode)
@@ -162,11 +201,12 @@ public class MapActivity extends FragmentActivity implements
     }
 
     private void switchToMapMode3d() {
+
         skyLayout.setVisibility(VISIBLE);
         mapGradientView.setVisibility(VISIBLE);
         toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(gpsMarker != null ? gpsMarker.getPosition() : mMap.getCameraPosition().target)
+                .target(gpsMarker != null && gpsMarker.getPosition() != null ? gpsMarker.getPosition() : mMap.getCameraPosition().target)
                 .zoom(mMap.getCameraPosition().zoom)
                 .tilt(67.5f)
                 .bearing(mMap.getCameraPosition().bearing)
@@ -279,12 +319,12 @@ public class MapActivity extends FragmentActivity implements
         createGpsMarker(gdanskLatLng);
         createBlurredArea();
         createLocationUpdates();
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                AppPreferences.addExperiencePoints(5);
-            }
-        });
+//        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+//            @Override
+//            public void onMapClick(final LatLng latLng) {
+//                refreshExploredArea(latLng);
+//            }
+//        });
     }
 
     private void createGpsMarker(final LatLng latLng) {
@@ -313,6 +353,12 @@ public class MapActivity extends FragmentActivity implements
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+//        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
+//            @Override
+//            public void onGpsStatusChanged(int i) {
+//                Log.i("TCI", "onGpsStatusChanged: " + i);
+//            }
+//        });
     }
 
     private LocationManager getLocationManagerService() {
@@ -341,7 +387,7 @@ public class MapActivity extends FragmentActivity implements
     private int fruitsEatenForCullentChallenge(final List<Fruit> fruitsEaten) {
         int counter = 0;
         for (final Fruit fruit : fruitsEaten) {
-            if (currentChallenge.fruitTypes.contains(fruit.getType())) {
+            if (currentChallenge.getFruitTypes().contains(fruit.getType())) {
                 counter++;
             }
         }
@@ -387,6 +433,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     public void startChallengeMode(final Challenge challenge) {
+        ToastUtils.makeNiceToast(this, Color.WHITE, challenge.description, AppResources.getColor(R.color.colorPrimary), challenge.getFruitIcon());
         challengeMode = true;
         currentChallenge = challenge;
         challengesButton.setClickable(false);
@@ -412,13 +459,11 @@ public class MapActivity extends FragmentActivity implements
         challengeLayout.setVisibility(GONE);
         challengeCount = 0;
         if (success) {
-            //TODO!!!
-            //showSuccessMessage();
+            releaseKonfetti();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "Congrats! Challenge complete!", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_tick));
             currentChallenge.applyRewardEffect();
-            Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
         } else {
-            //showFailureMessage();
-            Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "You ran out of time! Challenge failed.", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_error));
         }
         currentChallenge = null;
     }
@@ -428,6 +473,7 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(final Location location) {
+//        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
         //following needed for compass capabilities
 
         GeomagneticField field = new GeomagneticField(
@@ -458,9 +504,72 @@ public class MapActivity extends FragmentActivity implements
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
+        refreshExploredArea(currentLocation);
+
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
         updateCurrentChallenge(fruitsRemoved);
 
+        if (!fruitsRemoved.isEmpty()) {
+            updateCurrentChallenge(fruitsRemoved);
+        }
+    }
+
+    private void refreshExploredArea(final LatLng newLocation) {
+
+        if (!this.exploredPoints.isEmpty()) {
+            final LatLng lastLocation = this.exploredPoints.get(this.exploredPoints.size() - 1);
+            double distance = GeometryEngine.geodesicDistance(
+                    new Point(newLocation.latitude, newLocation.longitude),
+                    new Point(lastLocation.latitude, lastLocation.longitude),
+                    SpatialReference.create(SpatialReference.WKID_WGS84),
+                    (LinearUnit) Unit.create(LinearUnit.Code.METER));
+
+            if (distance > 250) {
+                this.exploredPoints.clear();
+            }
+        }
+
+        this.exploredPoints.add(newLocation);
+
+        final MultiPoint multiPoint = new MultiPoint();
+        for (final LatLng exploredPoint : this.exploredPoints) {
+            multiPoint.add(new Point(exploredPoint.latitude, exploredPoint.longitude));
+        }
+
+        final SpatialReference spatialReference = SpatialReference.create(SpatialReference.WKID_WGS84);
+        com.esri.core.geometry.Polygon polygon = GeometryEngine.buffer(multiPoint, spatialReference, 0.0015,
+                Unit.create(AngularUnit.Code.DEGREE));
+
+        final List<LatLng> hole = new LinkedList<>();
+        for (int i = 0; i < polygon.getPointCount(); i++) {
+            final Point point = polygon.getPoint(i);
+            hole.add(new LatLng(point.getX(), point.getY()));
+        }
+
+        double area = geodesicArea(polygon, spatialReference, (AreaUnit) Unit.create(SQUARE_KILOMETER));
+        AppPreferences.setAreaDiscovered(area);
+
+        this.blurredArea.setHoles(Arrays.asList(hole));
+    }
+
+    private static List<LatLng> createCircle(final LatLng center, final int radius) {
+        int polygonCorners = 50;
+
+        double radiusLatitude = Math.toDegrees(radius / (float) 34000);
+        double radiusLongitude = radiusLatitude / Math.cos(Math.toRadians(center.latitude));
+
+        final List<LatLng> points = new ArrayList<>(polygonCorners);
+
+        double anglePerCircleRegion = 2 * Math.PI / polygonCorners;
+
+        for (int i = 0; i < polygonCorners; i++) {
+            double theta = i * anglePerCircleRegion;
+            double latitude = center.latitude + (radiusLatitude * Math.sin(theta));
+            double longitude = center.longitude + (radiusLongitude * Math.cos(theta));
+            points.add(new LatLng(latitude, longitude));
+        }
+
+        return points;
     }
 
     private void checkDistance(final Location location, final long timeStamp) {
@@ -472,13 +581,13 @@ public class MapActivity extends FragmentActivity implements
                 AppPreferences.unlockApplication();
             } else {
                 Log.i(this.getClass().getName(), "tooo fast");
-                Toast.makeText(this, "You are mooving too fast! Slow Down", Toast.LENGTH_LONG).show();
+                ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.lightRed), "You are moving too fast!", AppResources.getColor(R.color.black), getDrawable(R.drawable.ic_error));
                 AppPreferences.blockApplication();
             }
         }
     }
 
-    final static double MAX_HUMAN_SPEED = 100f / 9.56f;
+    final static double MAX_HUMAN_SPEED = 100f / 1f;
 
     private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
         float distance = currentLocation.distanceTo(previousLocation);
@@ -493,12 +602,10 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onStatusChanged(final String s, final int i, final Bundle bundle) {
-
     }
 
     @Override
     public void onProviderEnabled(final String s) {
-
     }
 
     @Override

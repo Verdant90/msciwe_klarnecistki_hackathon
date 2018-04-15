@@ -7,6 +7,8 @@ import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.AppResources;
 import com.szymon.hackathonapplication.models.fruits.FruitType;
 
+import java.util.Arrays;
+
 public class PearTimeChallenge extends Challenge {
 
     @Override
@@ -16,7 +18,7 @@ public class PearTimeChallenge extends Challenge {
     }
 
     public PearTimeChallenge() {
-        fruitTypes.add(FruitType.PEAR);
+        super(Arrays.asList(FruitType.PEAR));
         timeInMinutes = 5;
         pointsReward = 40;
         description = "Collect 10 pears within 5 minutes.";

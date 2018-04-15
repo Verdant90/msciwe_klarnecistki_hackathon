@@ -53,7 +53,6 @@ public class ChallengeActivity extends Activity {
     }
 
     public void onChallengeClick(final Challenge challenge) {
-        Toast.makeText(this, challenge.title + " !", Toast.LENGTH_LONG).show();
         Intent returnIntent = new Intent();
         returnIntent.putExtra("result", challenge);
         setResult(Activity.RESULT_OK, returnIntent);
