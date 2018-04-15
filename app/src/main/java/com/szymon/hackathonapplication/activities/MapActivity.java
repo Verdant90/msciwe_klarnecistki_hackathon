@@ -6,10 +6,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.location.GpsStatus;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener2;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
@@ -71,7 +76,7 @@ import static com.esri.core.geometry.GeometryEngine.geodesicArea;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
-        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback {
+        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback, SensorEventListener2 {
 
     private static GoogleMap mMap;
     private static LatLng location;
@@ -110,6 +115,10 @@ public class MapActivity extends FragmentActivity implements
     KonfettiView konfettiView;
     private int challengeCount = 0;
     private boolean challengeMode;
+    private SensorManager sensorManager;
+    private float mDeclination;
+
+    private Context context = this;
 
     @Override
     public void onLevelChanged() {
@@ -118,7 +127,7 @@ public class MapActivity extends FragmentActivity implements
         final int level = AppPreferences.getLevel();
         ToastUtils.makeNiceToast(this,
                 AppResources.getColor(R.color.colorPrimary),
-                "Congratulations! You advanced to level " + level +"!",
+                "Congratulations! You advanced to level " + level + "!",
                 Color.WHITE,
                 getDrawable(R.drawable.ic_trophy));
     }
@@ -147,6 +156,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     private void switchToMapModeNormal() {
+        sensorManager.unregisterListener(this);
         skyLayout.setVisibility(GONE);
         mapGradientView.setVisibility(GONE);
         toggleStylesButton.setIcon(R.drawable.ic_map_3d, R.drawable.ic_map_3d);
@@ -160,18 +170,51 @@ public class MapActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    class RegisterSensorListenerAsync extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                Thread.sleep(900);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            final Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+            if (sensor != null) {
+                sensorManager.registerListener((SensorEventListener2) context,
+                        sensor,
+                        SensorManager.SENSOR_STATUS_ACCURACY_LOW);
+            }
+
+        }
+    }
+
     private void switchToMapMode3d() {
+
         skyLayout.setVisibility(VISIBLE);
         mapGradientView.setVisibility(VISIBLE);
         toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(mMap.getCameraPosition().target)
+                .target(gpsMarker != null && gpsMarker.getPosition() != null ? gpsMarker.getPosition() : mMap.getCameraPosition().target)
                 .zoom(mMap.getCameraPosition().zoom)
                 .tilt(67.5f)
                 .bearing(mMap.getCameraPosition().bearing)
                 .build();
         mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE_3D_MODE);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        new RegisterSensorListenerAsync().execute();
     }
 
     private GpsMarker gpsMarker;
@@ -220,6 +263,9 @@ public class MapActivity extends FragmentActivity implements
 
         setShopButtonIcon();
         setLevelTextView();
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+
     }
 
     private void setLevelTextView() {
@@ -289,7 +335,7 @@ public class MapActivity extends FragmentActivity implements
         final List<LatLng> blurredAreaPoints = new ArrayList<>();
         blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
         blurredAreaPoints.add(new LatLng(54.413736, 18.7800167));
-        blurredAreaPoints.add(new LatLng(54.3209641,18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641, 18.7800167));
         blurredAreaPoints.add(new LatLng(54.3209641, 18.572683));
         blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
 
@@ -428,6 +474,19 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onLocationChanged(final Location location) {
 //        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
+        //following needed for compass capabilities
+
+        GeomagneticField field = new GeomagneticField(
+                (float) location.getLatitude(),
+                (float) location.getLongitude(),
+                (float) location.getAltitude(),
+                System.currentTimeMillis()
+        );
+
+        // getDeclination returns degrees
+        mDeclination = field.getDeclination();
+
+
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         checkDistance(location, System.currentTimeMillis());
         previousLocation = location;
@@ -448,7 +507,9 @@ public class MapActivity extends FragmentActivity implements
         refreshExploredArea(currentLocation);
 
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
-        if(!fruitsRemoved.isEmpty()) {
+        updateCurrentChallenge(fruitsRemoved);
+
+        if (!fruitsRemoved.isEmpty()) {
             updateCurrentChallenge(fruitsRemoved);
         }
     }
@@ -477,7 +538,7 @@ public class MapActivity extends FragmentActivity implements
 
         final SpatialReference spatialReference = SpatialReference.create(SpatialReference.WKID_WGS84);
         com.esri.core.geometry.Polygon polygon = GeometryEngine.buffer(multiPoint, spatialReference, 0.0015,
-            Unit.create(AngularUnit.Code.DEGREE));
+                Unit.create(AngularUnit.Code.DEGREE));
 
         final List<LatLng> hole = new LinkedList<>();
         for (int i = 0; i < polygon.getPointCount(); i++) {
@@ -549,5 +610,57 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onProviderDisabled(final String s) {
+
+    }
+
+    @Override
+    public void onFlushCompleted(Sensor sensor) {
+
+    }
+
+    private float[] mRotationMatrix = new float[16];
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (mMap != null) {
+            if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+                SensorManager.getRotationMatrixFromVector(
+                        mRotationMatrix, event.values);
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(mRotationMatrix, orientation);
+                float bearing = (float) Math.toDegrees(orientation[0]) + mDeclination;
+                updateCamera(bearing);
+            }
+        }
+
+    }
+
+    Float previousBearing;
+    Float lastUsedBearingForUpdate = 0f;
+
+    public void updateCamera(float bearing) {
+        if (previousBearing != null && !screenWillShakeTooMuch(bearing)) {
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(mMap.getCameraPosition().target)
+                    .zoom(mMap.getCameraPosition().zoom)
+                    .tilt(67.5f)
+                    .bearing(bearing)
+                    .build();
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            lastUsedBearingForUpdate = bearing;
+        }
+        previousBearing = bearing;
+    }
+
+    private boolean screenWillShakeTooMuch(float bearing) {
+
+        return Math.abs(Math.abs(lastUsedBearingForUpdate) - Math.abs(bearing)) < 2;
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
     }
 }
