@@ -20,6 +20,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.esri.core.geometry.AngularUnit;
+import com.esri.core.geometry.GeometryEngine;
+import com.esri.core.geometry.MultiPoint;
+import com.esri.core.geometry.Point;
+import com.esri.core.geometry.SpatialReference;
+import com.esri.core.geometry.Unit;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -35,13 +41,14 @@ import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
-import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,6 +66,7 @@ public class MapActivity extends FragmentActivity implements
     private static GoogleMap mMap;
     private static LatLng location;
     private Polygon blurredArea;
+    private List<LatLng> exploredPoints = new LinkedList<>();
     private MapMVP.Presenter presenter;
     private Challenge currentChallenge;
     private CountDownTimer challengeTimerCountDown;
@@ -237,7 +245,8 @@ public class MapActivity extends FragmentActivity implements
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                AppPreferences.addExperiencePoints(5);
+                exploredPoints.add(latLng); // TODO should be removed
+                refreshExploredArea();
             }
         });
     }
@@ -400,8 +409,52 @@ public class MapActivity extends FragmentActivity implements
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
+        this.exploredPoints.add(currentLocation);
+        refreshExploredArea();
+
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
         updateCurrentChallenge(fruitsRemoved);
+    }
+
+    private void refreshExploredArea() {
+        if (this.exploredPoints.isEmpty()) return;
+
+        final MultiPoint multiPoint = new MultiPoint();
+        for (final LatLng exploredPoint : this.exploredPoints) {
+            multiPoint.add(new Point(exploredPoint.latitude, exploredPoint.longitude));
+        }
+
+        final SpatialReference spatialReference = SpatialReference.create(SpatialReference.WKID_WGS84);
+        com.esri.core.geometry.Polygon polygon = GeometryEngine.buffer(multiPoint, spatialReference, 0.0015,
+            Unit.create(AngularUnit.Code.DEGREE));
+
+        final List<LatLng> hole = new LinkedList<>();
+        for (int i = 0; i < polygon.getPointCount(); i++) {
+            final Point point = polygon.getPoint(i);
+            hole.add(new LatLng(point.getX(), point.getY()));
+        }
+
+        this.blurredArea.setHoles(Arrays.asList(hole));
+    }
+
+    private static List<LatLng> createCircle(final LatLng center, final int radius) {
+        int polygonCorners = 50;
+
+        double radiusLatitude = Math.toDegrees(radius / (float) 34000);
+        double radiusLongitude = radiusLatitude / Math.cos(Math.toRadians(center.latitude));
+
+        final List<LatLng> points = new ArrayList<>(polygonCorners);
+
+        double anglePerCircleRegion = 2 * Math.PI / polygonCorners;
+
+        for (int i = 0; i < polygonCorners; i++) {
+            double theta = i * anglePerCircleRegion;
+            double latitude = center.latitude + (radiusLatitude * Math.sin(theta));
+            double longitude = center.longitude + (radiusLongitude * Math.cos(theta));
+            points.add(new LatLng(latitude, longitude));
+        }
+
+        return points;
     }
 
     private void checkDistance(final Location location, final long timeStamp) {
