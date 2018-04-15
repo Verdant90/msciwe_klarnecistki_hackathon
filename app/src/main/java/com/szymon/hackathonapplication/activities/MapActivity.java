@@ -5,6 +5,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.GeomagneticField;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener2;
+import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,7 +40,6 @@ import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
-import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
@@ -54,7 +58,7 @@ import static android.view.View.VISIBLE;
 import static com.szymon.hackathonapplication.helpers.SystemServiceManager.requestFineLocationPermission;
 
 public class MapActivity extends FragmentActivity implements
-        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback {
+        LocationListener, OnMapReadyCallback, MapMVP.View, AppPreferences.Callback, SensorEventListener2 {
 
     private static GoogleMap mMap;
     private static LatLng location;
@@ -90,6 +94,7 @@ public class MapActivity extends FragmentActivity implements
     ImageView shopButton;
     private int challengeCount = 0;
     private boolean challengeMode;
+    private SensorManager sensorManager;
 
     @Override
     public void onLevelChanged() {
@@ -181,6 +186,14 @@ public class MapActivity extends FragmentActivity implements
 
         setShopButtonIcon();
         setLevelTextView();
+
+        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
+        final Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+        if (sensor != null) {
+            sensorManager.registerListener(this,
+                    sensor,
+                    SensorManager.SENSOR_STATUS_ACCURACY_LOW);
+        }
     }
 
     private void setLevelTextView() {
@@ -250,7 +263,7 @@ public class MapActivity extends FragmentActivity implements
         final List<LatLng> blurredAreaPoints = new ArrayList<>();
         blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
         blurredAreaPoints.add(new LatLng(54.413736, 18.7800167));
-        blurredAreaPoints.add(new LatLng(54.3209641,18.7800167));
+        blurredAreaPoints.add(new LatLng(54.3209641, 18.7800167));
         blurredAreaPoints.add(new LatLng(54.3209641, 18.572683));
         blurredAreaPoints.add(new LatLng(54.413736, 18.572683));
 
@@ -402,6 +415,7 @@ public class MapActivity extends FragmentActivity implements
 
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
         updateCurrentChallenge(fruitsRemoved);
+
     }
 
     private void checkDistance(final Location location, final long timeStamp) {
@@ -444,6 +458,32 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onProviderDisabled(final String s) {
+
+    }
+
+    @Override
+    public void onFlushCompleted(Sensor sensor) {
+
+    }
+
+    private float[] mRotationMatrix = new float[16];
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        if (mMap != null) {
+            if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+                SensorManager.getRotationMatrixFromVector(
+                        mRotationMatrix , event.values);
+                float[] orientation = new float[3];
+                SensorManager.getOrientation(mRotationMatrix, orientation);
+                float bearing =(float) Math.toDegrees(orientation[0]) + mDeclination;
+                updateCamera(bearing);
+            }
+        }
+
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
 
     }
 }
