@@ -360,7 +360,6 @@ public class MapActivity extends FragmentActivity implements
 
     public void endChallengeMode(boolean success) {
         challengeMode = false;
-        currentChallenge = null;
         challengesButton.setClickable(true);
         challengesButton.setEnabled(true);
         challengesButton.setAlpha(1f);
@@ -370,12 +369,13 @@ public class MapActivity extends FragmentActivity implements
         if (success) {
             //TODO!!!
             //showSuccessMessage();
-            //receiveReward();
+            currentChallenge.applyRewardEffect();
             Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
         } else {
             //showFailureMessage();
             Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
         }
+        currentChallenge = null;
     }
 
     private Location previousLocation;

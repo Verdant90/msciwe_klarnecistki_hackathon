@@ -10,6 +10,7 @@ public class FruitTimeChallenge extends Challenge {
     @Override
     public void applyRewardEffect() {
         AppPreferences.increaseFruitChallengeCount();
+        AppPreferences.addYabCoins(pointsReward);
     }
 
     public FruitTimeChallenge() {
