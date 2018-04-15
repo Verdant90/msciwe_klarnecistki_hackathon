@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Challenge implements Parcelable {
+
+    public abstract void applyRewardEffect();
     public Set<FruitType> fruitTypes= new HashSet<>();
     public String title;
     public String description;

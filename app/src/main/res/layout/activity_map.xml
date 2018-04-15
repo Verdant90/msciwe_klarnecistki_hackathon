@@ -45,6 +45,29 @@
             android:background="@drawable/gradient_map" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/text_current_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <mbanje.kurt.fabbutton.FabButton
+        android:id="@+id/btn_current_location"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:color="@android:color/white"
+        android:indeterminate="true"
+        android:src="@drawable/ic_current_location"
+        app:fbb_endBitmap="@drawable/ic_current_location"
+        app:fbb_progressColor="@android:color/white"
+        app:fbb_progressWidthRatio="0.1"
+        app:fbb_showEndBitmap="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.93"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.30" />
+
     <mbanje.kurt.fabbutton.FabButton
         android:id="@+id/btn_map_mode"
         android:layout_width="45dp"
@@ -61,6 +84,7 @@
         app:layout_constraintHorizontal_bias="0.93"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_current_location"
         app:layout_constraintVertical_bias="0.4" />
 
     <mbanje.kurt.fabbutton.FabButton

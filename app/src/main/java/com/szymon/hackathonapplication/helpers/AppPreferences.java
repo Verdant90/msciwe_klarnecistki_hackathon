@@ -4,8 +4,11 @@ package com.szymon.hackathonapplication.helpers;
 import android.content.SharedPreferences;
 
 import com.szymon.hackathonapplication.HackatonApplication;
+import com.szymon.hackathonapplication.models.levels.ExperienceLevelMapper;
 
 public class AppPreferences {
+
+    private static Callback callback;
 
     private static final String EXPLORATION_RANGE = "EXPLORATION_RANGE";
     private static final String TOTAL_YAB_COINS = "TOTAL_YAB_COINS";
@@ -14,13 +17,18 @@ public class AppPreferences {
     private static final String PEAR_COUNT = "PEAR_COUNT";
     private static final String PLUM_COUNT = "PLUM_COUNT";
     private static final String EXPERIENCE_POINTS = "EXPERIENCE_POINTS";
+    private static final String APPLE_CHALLENGES = "APPLE_CHALLENGES";
+    private static final String PEAR_CHALLENGES = "PEAR_CHALLENGES";
+    private static final String PLUM_CHALLENGES = "PLUM_CHALLENGES";
+    private static final String FRUIT_CHALLENGES = "FRUIT_CHALLENGES";
+    private static final String BASKET_VERSION = "BASKET_VERSION";
 
     private static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
     private static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
 
     private static final String EXPERIENCE_POINTS_BONUS_MULTIPLIER = "EXPERIENCE_POINTS_BONUS_MULTIPLIER";
     private static final float INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER = 1.0f;
-    public static final String BASKET_VERSION = "BASKET_VERSION";
+
 
     private static SharedPreferences preferences;
     private static SharedPreferences.Editor preferencesEdit;
@@ -34,6 +42,14 @@ public class AppPreferences {
         preferences = HackatonApplication.getSharedPreferences();
         preferencesEdit = preferences.edit();
         return instance;
+    }
+
+    public interface Callback {
+        void onLevelChanged();
+    }
+
+    public static void setCallback(final Callback callback) {
+        AppPreferences.callback = callback;
     }
 
     // Basket version
@@ -67,11 +83,17 @@ public class AppPreferences {
         setExperiencePoints(current + experiencePointsWithBonus);
     }
 
-    private static void setExperiencePoints(final long experiencePoints) {
+    public static void setExperiencePoints(final long experiencePoints) {
+        final int levelBefore = getLevel();
         preferencesEdit.putLong(EXPERIENCE_POINTS, experiencePoints).apply();
+        final int levelAfter = getLevel();
+
+        if (levelBefore != levelAfter) {
+            callback.onLevelChanged();
+        }
     }
 
-    private static long getExperiencePoints() {
+    public static long getExperiencePoints() {
         return preferences.getLong(EXPERIENCE_POINTS, 0);
     }
 
@@ -94,6 +116,13 @@ public class AppPreferences {
     public static float getExperienceBonusMultiplier() {
         return preferences
                 .getFloat(EXPERIENCE_POINTS_BONUS_MULTIPLIER, INITIAL_EXPERIENCE_POINTS_BONUS_MULTIPLIER);
+    }
+
+    // Levels
+
+    public static int getLevel() {
+        final long experience = getExperiencePoints();
+        return ExperienceLevelMapper.toLevel((int) experience);
     }
 
     // Yab Coins
@@ -194,4 +223,59 @@ public class AppPreferences {
         final long current = getPlumCount();
         setPlumCount(current + 1);
     }
+
+    // Challenges
+
+    private static void setAppleChallengeCount(final long points) {
+        preferencesEdit.putLong(APPLE_CHALLENGES, points).apply();
+    }
+
+    public static long getAppleChallengeCount() {
+        return preferences.getLong(APPLE_CHALLENGES, 0);
+    }
+
+    public static void increaseAppleChallengeCount() {
+        long current = getAppleChallengeCount();
+        preferencesEdit.putLong(APPLE_CHALLENGES, current + 1).apply();
+    }
+
+    private static void setPearChallengeCount(final long points) {
+        preferencesEdit.putLong(PEAR_CHALLENGES, points).apply();
+    }
+
+    public static long getPearChallengeCount() {
+        return preferences.getLong(PEAR_CHALLENGES, 0);
+    }
+
+    public static void increasePearChallengeCount() {
+        long current = getPearChallengeCount();
+        preferencesEdit.putLong(PEAR_CHALLENGES, current + 1).apply();
+    }
+
+    private static void setPlumChallengeCount(final long points) {
+        preferencesEdit.putLong(PLUM_CHALLENGES, points).apply();
+    }
+
+    public static long getPlumChallengeCount() {
+        return preferences.getLong(PLUM_CHALLENGES, 0);
+    }
+
+    public static void increasePlumChallengeCount(){
+        long current = getPlumChallengeCount();
+        preferencesEdit.putLong(PLUM_CHALLENGES, current +1).apply();
+    }
+
+    private static void setFruitChallengeCount(final long points) {
+        preferencesEdit.putLong(FRUIT_CHALLENGES, points).apply();
+    }
+
+    public static long getFruitChallengeCount() {
+        return preferences.getLong(FRUIT_CHALLENGES, 0);
+    }
+
+    public static void increaseFruitChallengeCount() {
+        long current = getFruitChallengeCount();
+        preferencesEdit.putLong(FRUIT_CHALLENGES, current+1);
+    }
+
 }
