@@ -11,6 +11,7 @@ public class AppPreferences {
     private static Callback callback;
 
     private static final String EXPLORATION_RANGE = "EXPLORATION_RANGE";
+    private static final String AREA_DISCOVERED = "AREA_DISCOVERED";
     private static final String TOTAL_YAB_COINS = "TOTAL_YAB_COINS";
     private static final String YAB_COINS = "YAB_COINS";
     private static final String APPLE_COUNT = "APPLE_COUNT";
@@ -302,6 +303,19 @@ public class AppPreferences {
     }
 
     public static boolean isApplicationBlocked() {
-        return  preferences.getBoolean(APPLICATION_BLOCKED,false);
+        return preferences.getBoolean(APPLICATION_BLOCKED, false);
+    }
+
+    private static void setAreaDiscovered(final double area) {
+        preferencesEdit.putString(AREA_DISCOVERED, Double.toString(area)).apply();
+    }
+
+    public static double getAreaDiscovered() {
+        return Double.valueOf(preferences.getString(AREA_DISCOVERED, "0"));
+    }
+
+    public static void addAreaDiscovered(final double area) {
+        double current = getAreaDiscovered();
+        setAreaDiscovered(current + area);
     }
 }

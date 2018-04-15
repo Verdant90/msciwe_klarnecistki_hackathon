@@ -45,6 +45,7 @@ public abstract class Fruit {
         }
         AppPreferences.addYabCoins(yabCoinsReward);
         AppPreferences.addExperiencePoints(experienceReward);
+        applyRewardEffect();
     }
 
     public FruitType getType(){
