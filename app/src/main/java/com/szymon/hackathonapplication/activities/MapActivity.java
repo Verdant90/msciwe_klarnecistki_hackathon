@@ -393,12 +393,10 @@ public class MapActivity extends FragmentActivity implements
         challengeCount = 0;
         if (success) {
             //TODO!!!
-            //showSuccessMessage();
-            //receiveReward();
-            Toast.makeText(this, "SUCCESS", Toast.LENGTH_LONG).show();
+            releaseKonfetti();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "Congrats! Challenge complete!", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_tick));
         } else {
-            //showFailureMessage();
-            Toast.makeText(this, "FAIL", Toast.LENGTH_LONG).show();
+            ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "You ran out of time! Challenge failed.", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_error));
         }
     }
 
