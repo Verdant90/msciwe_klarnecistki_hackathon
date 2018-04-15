@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:gravity="center"
+    android:alpha="0.8"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="1dp" />
+
+    <ImageView
+        android:layout_marginTop="50dp"
+        android:id="@+id/image_toast"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/ic_apple_challenge" />
+
+    <TextView
+        android:id="@+id/text_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:lines="2"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        tools:text="YOU ADVANCED!!!!!"
+        android:layout_marginBottom="50dp"/>
+
+    <View
+        android:layout_width="300dp"
+        android:layout_height="1dp" />
+</LinearLayout>

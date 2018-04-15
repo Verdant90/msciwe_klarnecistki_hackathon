@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
 import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
@@ -100,6 +101,15 @@ public class MapActivity extends FragmentActivity implements
     @Override
     public void onLevelChanged() {
         setLevelTextView();
+        releaseKonfetti();
+        ToastUtils.makeToast(this,
+                AppResources.getColor(R.color.colorPrimary),
+                "Congratulations! You advanced to a new level!",
+                Color.WHITE,
+                getDrawable(R.drawable.ic_trophy));
+    }
+
+    private void releaseKonfetti() {
         konfettiView.build()
                 .addColors(Color.WHITE, AppResources.getColor(R.color.colorAccent), AppResources.getColor(R.color.colorPrimary))
                 .setDirection(0.0, 359.0)
@@ -110,7 +120,6 @@ public class MapActivity extends FragmentActivity implements
                 .addSizes(new nl.dionsegijn.konfetti.models.Size(12, 5f))
                 .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
                 .stream(300, 5000L);
-        Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.btn_map_mode)
