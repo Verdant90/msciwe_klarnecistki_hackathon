@@ -13,6 +13,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
@@ -95,6 +96,9 @@ public class MapActivity extends FragmentActivity implements
     private int challengeCount = 0;
     private boolean challengeMode;
     private SensorManager sensorManager;
+    private float mDeclination;
+
+    private Context context = this;
 
     @Override
     public void onLevelChanged() {
@@ -113,6 +117,7 @@ public class MapActivity extends FragmentActivity implements
     }
 
     private void switchToMapModeNormal() {
+        sensorManager.unregisterListener(this);
         skyLayout.setVisibility(GONE);
         mapGradientView.setVisibility(GONE);
         toggleStylesButton.setIcon(R.drawable.ic_map_3d, R.drawable.ic_map_3d);
@@ -126,18 +131,50 @@ public class MapActivity extends FragmentActivity implements
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
+    class RegisterSensorListenerAsync extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected Void doInBackground(String... params) {
+            try {
+                Thread.sleep(900);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            final Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
+            if (sensor != null) {
+                sensorManager.registerListener((SensorEventListener2) context,
+                        sensor,
+                        SensorManager.SENSOR_STATUS_ACCURACY_LOW);
+            }
+
+        }
+    }
+
     private void switchToMapMode3d() {
         skyLayout.setVisibility(VISIBLE);
         mapGradientView.setVisibility(VISIBLE);
         toggleStylesButton.setIcon(R.drawable.ic_map_normal, R.drawable.ic_map_normal);
         CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(mMap.getCameraPosition().target)
+                .target(gpsMarker != null ? gpsMarker.getPosition() : mMap.getCameraPosition().target)
                 .zoom(mMap.getCameraPosition().zoom)
                 .tilt(67.5f)
                 .bearing(mMap.getCameraPosition().bearing)
                 .build();
         mMap.setMinZoomPreference(MIN_ZOOM_PREFERENCE_3D_MODE);
         mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+        new RegisterSensorListenerAsync().execute();
     }
 
     private GpsMarker gpsMarker;
@@ -188,12 +225,7 @@ public class MapActivity extends FragmentActivity implements
         setLevelTextView();
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        final Sensor sensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-        if (sensor != null) {
-            sensorManager.registerListener(this,
-                    sensor,
-                    SensorManager.SENSOR_STATUS_ACCURACY_LOW);
-        }
+
     }
 
     private void setLevelTextView() {
@@ -396,6 +428,19 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(final Location location) {
+        //following needed for compass capabilities
+
+        GeomagneticField field = new GeomagneticField(
+                (float) location.getLatitude(),
+                (float) location.getLongitude(),
+                (float) location.getAltitude(),
+                System.currentTimeMillis()
+        );
+
+        // getDeclination returns degrees
+        mDeclination = field.getDeclination();
+
+
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         checkDistance(location, System.currentTimeMillis());
         previousLocation = location;
@@ -467,18 +512,43 @@ public class MapActivity extends FragmentActivity implements
     }
 
     private float[] mRotationMatrix = new float[16];
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (mMap != null) {
-            if(event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
+            if (event.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR) {
                 SensorManager.getRotationMatrixFromVector(
-                        mRotationMatrix , event.values);
+                        mRotationMatrix, event.values);
                 float[] orientation = new float[3];
                 SensorManager.getOrientation(mRotationMatrix, orientation);
-                float bearing =(float) Math.toDegrees(orientation[0]) + mDeclination;
+                float bearing = (float) Math.toDegrees(orientation[0]) + mDeclination;
                 updateCamera(bearing);
             }
         }
+
+    }
+
+    Float previousBearing;
+    Float lastUsedBearingForUpdate = 0f;
+
+    public void updateCamera(float bearing) {
+        if (previousBearing != null && !screenWillShakeTooMuch(bearing)) {
+
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(mMap.getCameraPosition().target)
+                    .zoom(mMap.getCameraPosition().zoom)
+                    .tilt(67.5f)
+                    .bearing(bearing)
+                    .build();
+            mMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            lastUsedBearingForUpdate = bearing;
+        }
+        previousBearing = bearing;
+    }
+
+    private boolean screenWillShakeTooMuch(float bearing) {
+
+        return Math.abs(Math.abs(lastUsedBearingForUpdate) - Math.abs(bearing)) < 2;
 
     }
 
