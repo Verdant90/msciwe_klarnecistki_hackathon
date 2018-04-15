@@ -1,11 +1,15 @@
 package com.szymon.hackathonapplication.models.shop.items;
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Toast;
 
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
+import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.models.shop.ShopItem;
 import com.szymon.hackathonapplication.models.shop.ShopItemPriceMapper;
 
@@ -33,8 +37,9 @@ public class DoubleCoinsShopItem extends ShopItem {
             @Override
             public void onFinish() {
                 AppPreferences.resetYabCoinsBonusMultiplier();
+                ToastUtils.makeNiceToast(getContext(), AppResources.getColor(R.color.white), getTitle() + " bonus finished!", AppResources.getColor(R.color.colorPrimary), getShopItemIcon());
                 // TODO Toast
-                Toast.makeText(getContext(), getTitle() + " bonus finished!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), getTitle() + " bonus has finished!", Toast.LENGTH_SHORT).show();
             }
         };
     }
@@ -52,7 +57,9 @@ public class DoubleCoinsShopItem extends ShopItem {
         timer.start();
 
         // TODO Toast
-        Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
+        ToastUtils.makeNiceToast(getContext(), AppResources.getColor(R.color.white), getTitle() + " bonus \nis active!", AppResources.getColor(R.color.colorPrimary), getShopItemIcon());
+
+        //Toast.makeText(getContext(), getTitle() + " bonus is active!", Toast.LENGTH_SHORT).show();
 
         this.callback.onShopItemPurchased();
     }
