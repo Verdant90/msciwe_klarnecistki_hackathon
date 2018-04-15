@@ -429,7 +429,7 @@ public class MapActivity extends FragmentActivity implements
     public void onLocationChanged(final Location location) {
 //        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
-        //checkDistance(location, System.currentTimeMillis());
+        checkDistance(location, System.currentTimeMillis());
         previousLocation = location;
         previousLocationTime = System.currentTimeMillis();
         if (AppPreferences.isApplicationBlocked()) {
@@ -526,7 +526,7 @@ public class MapActivity extends FragmentActivity implements
         }
     }
 
-    final static double MAX_HUMAN_SPEED = 100f / 16f;
+    final static double MAX_HUMAN_SPEED = 100f / 1f;
 
     private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
         float distance = currentLocation.distanceTo(previousLocation);
