@@ -516,7 +516,7 @@ public class MapActivity extends FragmentActivity implements
         }
     }
 
-    final static double MAX_HUMAN_SPEED = 100f / 9.56f;
+    final static double MAX_HUMAN_SPEED = 100f / 16f;
 
     private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
         float distance = currentLocation.distanceTo(previousLocation);
