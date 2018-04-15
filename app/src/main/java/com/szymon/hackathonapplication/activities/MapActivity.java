@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.PolygonOptions;
 import com.szymon.hackathonapplication.R;
 import com.szymon.hackathonapplication.helpers.AppPreferences;
+import com.szymon.hackathonapplication.helpers.AppResources;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
@@ -48,6 +50,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import mbanje.kurt.fabbutton.FabButton;
+import nl.dionsegijn.konfetti.KonfettiView;
+import nl.dionsegijn.konfetti.models.Shape;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -88,12 +92,24 @@ public class MapActivity extends FragmentActivity implements
     FabButton challengesButton;
     @BindView(R.id.button_shop)
     ImageView shopButton;
+    @BindView(R.id.konfettiView)
+    KonfettiView konfettiView;
     private int challengeCount = 0;
     private boolean challengeMode;
 
     @Override
     public void onLevelChanged() {
         setLevelTextView();
+        konfettiView.build()
+                .addColors(Color.WHITE, AppResources.getColor(R.color.colorAccent), AppResources.getColor(R.color.colorPrimary))
+                .setDirection(0.0, 359.0)
+                .setSpeed(1f, 5f)
+                .setFadeOutEnabled(true)
+                .setTimeToLive(1000L)
+                .addShapes(Shape.RECT, Shape.CIRCLE)
+                .addSizes(new nl.dionsegijn.konfetti.models.Size(12, 5f))
+                .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+                .stream(300, 5000L);
         Toast.makeText(this, "New level!", Toast.LENGTH_SHORT).show();
     }
 
