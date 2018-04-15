@@ -10,6 +10,7 @@ public class PlumTimeChallenge extends Challenge {
     @Override
     public void applyRewardEffect() {
         AppPreferences.increasePlumChallengeCount();
+        AppPreferences.addYabCoins(pointsReward);
     }
 
     public PlumTimeChallenge() {

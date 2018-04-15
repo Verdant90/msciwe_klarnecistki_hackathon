@@ -385,7 +385,6 @@ public class MapActivity extends FragmentActivity implements
 
     public void endChallengeMode(boolean success) {
         challengeMode = false;
-        currentChallenge = null;
         challengesButton.setClickable(true);
         challengesButton.setEnabled(true);
         challengesButton.setAlpha(1f);
@@ -393,12 +392,13 @@ public class MapActivity extends FragmentActivity implements
         challengeLayout.setVisibility(GONE);
         challengeCount = 0;
         if (success) {
-            //TODO!!!
             releaseKonfetti();
             ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "Congrats! Challenge complete!", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_tick));
+            currentChallenge.applyRewardEffect();
         } else {
             ToastUtils.makeNiceToast(this, AppResources.getColor(R.color.white), "You ran out of time! Challenge failed.", AppResources.getColor(R.color.colorPrimary), getDrawable(R.drawable.ic_error));
         }
+        currentChallenge = null;
     }
 
     private Location previousLocation;

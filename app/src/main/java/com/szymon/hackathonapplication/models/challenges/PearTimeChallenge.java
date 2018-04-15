@@ -12,6 +12,7 @@ public class PearTimeChallenge extends Challenge {
     @Override
     public void applyRewardEffect() {
         AppPreferences.increasePearChallengeCount();
+        AppPreferences.addYabCoins(pointsReward);
     }
 
     public PearTimeChallenge() {
