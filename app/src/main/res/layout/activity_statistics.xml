@@ -9,6 +9,19 @@
         layout="@layout/layout_stats_header"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Button
+        android:id="@+id/btn_fb_share"
+        android:layout_width="160dp"
+        android:layout_height="30dp"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/scroll_view_layout_content"
+        app:layout_constraintVertical_bias="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Share my stats on FB!"
+        style="@style/com_facebook_button_share"/>
+
     <ScrollView
         android:id="@+id/scroll_view_layout_content"
         android:layout_width="match_parent"
