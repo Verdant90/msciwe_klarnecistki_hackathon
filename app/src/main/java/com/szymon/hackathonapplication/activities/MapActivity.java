@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -305,7 +306,13 @@ public class MapActivity extends FragmentActivity implements
             requestFineLocationPermission(this);
             return;
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, this);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        locationManager.addGpsStatusListener(new GpsStatus.Listener() {
+            @Override
+            public void onGpsStatusChanged(int i) {
+                Log.i("TCI", "onGpsStatusChanged: " + i);
+            }
+        });
     }
 
     private LocationManager getLocationManagerService() {
@@ -420,6 +427,7 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(final Location location) {
+        Log.i("TCI", location.getLatitude() + ", " + location.getLongitude());
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
         checkDistance(location, System.currentTimeMillis());
         previousLocation = location;
@@ -531,16 +539,13 @@ public class MapActivity extends FragmentActivity implements
 
     @Override
     public void onStatusChanged(final String s, final int i, final Bundle bundle) {
-
     }
 
     @Override
     public void onProviderEnabled(final String s) {
-
     }
 
     @Override
     public void onProviderDisabled(final String s) {
-
     }
 }
