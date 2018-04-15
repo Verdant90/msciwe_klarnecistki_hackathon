@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.esri.core.geometry.AngularUnit;
 import com.esri.core.geometry.AreaUnit;
 import com.esri.core.geometry.GeometryEngine;
+import com.esri.core.geometry.LinearUnit;
 import com.esri.core.geometry.MultiPoint;
 import com.esri.core.geometry.Point;
 import com.esri.core.geometry.SpatialReference;
@@ -273,9 +274,8 @@ public class MapActivity extends FragmentActivity implements
         createLocationUpdates();
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                exploredPoints.add(latLng); // TODO should be removed
-                refreshExploredArea();
+            public void onMapClick(final LatLng latLng) {
+                refreshExploredArea(latLng);
             }
         });
     }
@@ -437,15 +437,28 @@ public class MapActivity extends FragmentActivity implements
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
-        this.exploredPoints.add(currentLocation);
-        refreshExploredArea();
+        refreshExploredArea(currentLocation);
 
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
         updateCurrentChallenge(fruitsRemoved);
     }
 
-    private void refreshExploredArea() {
-        if (this.exploredPoints.isEmpty()) return;
+    private void refreshExploredArea(final LatLng newLocation) {
+
+        if (!this.exploredPoints.isEmpty()) {
+            final LatLng lastLocation = this.exploredPoints.get(this.exploredPoints.size() - 1);
+            double distance = GeometryEngine.geodesicDistance(
+                    new Point(newLocation.latitude, newLocation.longitude),
+                    new Point(lastLocation.latitude, lastLocation.longitude),
+                    SpatialReference.create(SpatialReference.WKID_WGS84),
+                    (LinearUnit) Unit.create(LinearUnit.Code.METER));
+
+            if (distance > 250) {
+                this.exploredPoints.clear();
+            }
+        }
+
+        this.exploredPoints.add(newLocation);
 
         final MultiPoint multiPoint = new MultiPoint();
         for (final LatLng exploredPoint : this.exploredPoints) {
