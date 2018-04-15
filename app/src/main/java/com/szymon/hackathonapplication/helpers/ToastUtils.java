@@ -13,7 +13,7 @@ import com.szymon.hackathonapplication.R;
 
 public class ToastUtils {
 
-    public static void makeToast(final Context context, final int backgroundColor, final String message, final int textColor, final Drawable icon) {
+    public static void makeNiceToast(final Context context, final int backgroundColor, final String message, final int textColor, final Drawable icon) {
         Toast toast = new Toast(context);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.setDuration(Toast.LENGTH_LONG);

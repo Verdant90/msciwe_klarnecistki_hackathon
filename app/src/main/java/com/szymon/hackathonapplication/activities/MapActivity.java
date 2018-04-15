@@ -38,7 +38,6 @@ import com.szymon.hackathonapplication.helpers.ToastUtils;
 import com.szymon.hackathonapplication.helpers.map.GpsMarker;
 import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
-import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
 import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
@@ -102,7 +101,7 @@ public class MapActivity extends FragmentActivity implements
     public void onLevelChanged() {
         setLevelTextView();
         releaseKonfetti();
-        ToastUtils.makeToast(this,
+        ToastUtils.makeNiceToast(this,
                 AppResources.getColor(R.color.colorPrimary),
                 "Congratulations! You advanced to a new level!",
                 Color.WHITE,
