@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,8 +35,8 @@ import com.szymon.hackathonapplication.interfaces.MapMVP;
 import com.szymon.hackathonapplication.models.challenges.Challenge;
 import com.szymon.hackathonapplication.models.challenges.PearTimeChallenge;
 import com.szymon.hackathonapplication.models.fruits.Fruit;
-import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.models.fruits.FruitsDao;
+import com.szymon.hackathonapplication.models.shop.BasketVersionIconMapper;
 import com.szymon.hackathonapplication.presenters.MapActivityPresenter;
 
 import java.util.List;
@@ -127,6 +128,7 @@ public class MapActivity extends FragmentActivity implements
     @OnClick(R.id.btn_current_location)
     public void goToCurrentLocation() {
         final LatLng position = gpsMarker.getPosition();
+        if (position == null) return;
 
         final CameraPosition cameraPosition = CameraPosition.builder()
                 .zoom(MIN_ZOOM_PREFERENCE_3D_MODE)
@@ -329,14 +331,58 @@ public class MapActivity extends FragmentActivity implements
         }
     }
 
+    private Location previousLocation;
+    private Long previousLocationTime;
+
     @Override
     public void onLocationChanged(final Location location) {
         final LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+        checkDistance(location, System.currentTimeMillis());
+        previousLocation = location;
+        previousLocationTime = System.currentTimeMillis();
+        if (AppPreferences.isApplicationBlocked()) {
+            gpsMarker.hideRange();
+            gpsMarker.changePosition(currentLocation);
+            return;
+        } else {
+            if (gpsMarker != null) {
+                gpsMarker.showRange();
+            }
+        }
+
         gpsMarker.changePosition(currentLocation);
         MapActivity.location = currentLocation;
 
         final List<Fruit> fruitsRemoved = FruitsDao.removeFruitsInRange(location);
         updateCurrentChallenge(fruitsRemoved);
+    }
+
+    private void checkDistance(final Location location, final long timeStamp) {
+        if (previousLocation != null && previousLocationTime != null) {
+            //TODO cheatSafety (time) speed check 100 m / 9.56
+            if (speedIsOk(location, previousLocation, timeStamp, previousLocationTime)) {
+                AppPreferences.increaseDistance(location.distanceTo(previousLocation));
+                Log.i(this.getClass().getName(), "ok");
+                AppPreferences.unlockApplication();
+            } else {
+                Log.i(this.getClass().getName(), "tooo fast");
+                Toast.makeText(this, "You are mooving too fast! Slow Down", Toast.LENGTH_LONG).show();
+                AppPreferences.blockApplication();
+            }
+        }
+    }
+
+    final static double MAX_HUMAN_SPEED = 100f / 9.56f;
+
+    private boolean speedIsOk(final Location currentLocation, final Location previousLocation, final Long currentLocationTime, final Long previousLocationTime) {
+        float distance = currentLocation.distanceTo(previousLocation);
+        double timeMilis = currentLocationTime - previousLocationTime;
+        double timeSec = timeMilis / 1000;
+        Log.i(" speed", "time : " + timeSec);
+        Log.i(" speed", "speed : " + distance / timeSec);
+        //Log.d("speed : ", Double.valueOf(currentSpeed).toString());
+        Double v = distance / timeSec;
+        return MAX_HUMAN_SPEED > v;
     }
 
     @Override

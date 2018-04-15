@@ -53,4 +53,11 @@ public class GpsMarker {
     public LatLng getPosition() {
         return this.latLng;
     }
+
+    public void hideRange(){
+        circle.setVisible(false);
+    }
+    public void showRange(){
+        circle.setVisible(true);
+    }
 }

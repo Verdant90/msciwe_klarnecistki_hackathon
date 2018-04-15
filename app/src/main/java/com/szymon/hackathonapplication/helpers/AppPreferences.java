@@ -18,6 +18,8 @@ public class AppPreferences {
     private static final String PEAR_CHALLENGES = "PEAR_CHALLENGES";
     private static final String PLUM_CHALLENGES = "PLUM_CHALLENGES";
     private static final String FRUIT_CHALLENGES = "FRUIT_CHALLENGES";
+    private static final String TOTAL_DISTANCE = "TOTAL_DISTANCE";
+    private static final String APPLICATION_BLOCKED = "APPLICATION_BLOCKED";
 
     private static final String YAB_COINS_BONUS_MULTIPLIER = "YAB_COINS_BONUS_MULTIPLIER";
     private static final float INITIAL_YAB_COINS_BONUS_MULTIPLIER = 1.0f;
@@ -235,9 +237,9 @@ public class AppPreferences {
         return preferences.getLong(PLUM_CHALLENGES, 0);
     }
 
-    public static void increasePlumChallengeCount(){
+    public static void increasePlumChallengeCount() {
         long current = getPlumChallengeCount();
-        preferencesEdit.putLong(PLUM_CHALLENGES, current +1).apply();
+        preferencesEdit.putLong(PLUM_CHALLENGES, current + 1).apply();
     }
 
     private static void setFruitChallengeCount(final long points) {
@@ -250,7 +252,33 @@ public class AppPreferences {
 
     public static void increaseFruitChallengeCount() {
         long current = getFruitChallengeCount();
-        preferencesEdit.putLong(FRUIT_CHALLENGES, current+1);
+        preferencesEdit.putLong(FRUIT_CHALLENGES, current + 1).apply();
     }
 
+    // Distance measurment
+
+    private static void setTotalDistance(final float distance) {
+        preferencesEdit.putFloat(TOTAL_DISTANCE, distance).apply();
+    }
+
+    public static float getTotalDistance() {
+        return preferences.getFloat(TOTAL_DISTANCE, 0);
+    }
+
+    public static void increaseDistance(final float distance) {
+        float current = getTotalDistance();
+        preferencesEdit.putFloat(TOTAL_DISTANCE, current + distance).apply();
+    }
+
+    public static void blockApplication() {
+        preferencesEdit.putBoolean(APPLICATION_BLOCKED, true).apply();
+    }
+
+    public static void unlockApplication() {
+        preferencesEdit.putBoolean(APPLICATION_BLOCKED, false).apply();
+    }
+
+    public static boolean isApplicationBlocked() {
+        return  preferences.getBoolean(APPLICATION_BLOCKED,false);
+    }
 }
