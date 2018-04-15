@@ -45,11 +45,36 @@
             android:visibility="invisible"
             android:background="@drawable/gradient_map" />
     </RelativeLayout>
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.1"/>
+    <ImageView
+        android:id="@+id/image_level_ball"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/ic_lvl_ball"
+        app:layout_constraintVertical_bias="0.03"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_level"
+        app:layout_constraintStart_toStartOf="@+id/guideline_level"/>
 
     <TextView
         android:id="@+id/text_current_level"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="2"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:textColor="@color/black"
+        app:layout_constraintVertical_bias="0.045"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/guideline_level"
+        app:layout_constraintStart_toStartOf="@+id/guideline_level" />
 
     <mbanje.kurt.fabbutton.FabButton
         android:id="@+id/btn_current_location"

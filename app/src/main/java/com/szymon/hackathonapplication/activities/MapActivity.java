@@ -101,9 +101,10 @@ public class MapActivity extends FragmentActivity implements
     public void onLevelChanged() {
         setLevelTextView();
         releaseKonfetti();
+        final int level = AppPreferences.getLevel();
         ToastUtils.makeNiceToast(this,
                 AppResources.getColor(R.color.colorPrimary),
-                "Congratulations! You advanced to a new level!",
+                "Congratulations! You advanced to level " + level +"!",
                 Color.WHITE,
                 getDrawable(R.drawable.ic_trophy));
     }
